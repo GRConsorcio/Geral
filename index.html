@@ -1,0 +1,313 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow+Condensed:wght@300;400;600&display=swap');
+:root{--gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;--bk:#0A0A0A;--bk2:#111111;--bk3:#1A1A1A;--wh:#F5F0E8;--wh2:#DDD8CC;--bd:rgba(201,168,76,0.25);}
+*{box-sizing:border-box;margin:0;padding:0;}
+.root{background:var(--bk);font-family:'Barlow Condensed',sans-serif;color:var(--wh);padding-bottom:2rem;}
+.hdr{background:var(--bk2);border-bottom:1px solid var(--bd);padding:1.1rem 1rem .9rem;text-align:center;position:relative;}
+.hdr::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:180px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.logo-sub{font-size:10px;letter-spacing:5px;color:var(--wh2);text-transform:uppercase;margin-top:2px;font-weight:300;}
+.month-badge{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:0.5px solid var(--bd);padding:3px 12px;border-radius:20px;}
+.nav-tabs{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);}
+.nav-tab{flex:1;padding:10px 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Barlow Condensed',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
+.panel{display:none;}.panel.active{display:block;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);}
+.stat{background:var(--bk3);padding:.9rem;text-align:center;}
+.stat-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--wh2);font-weight:300;margin-bottom:3px;}
+.stat-val{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--gold);line-height:1;}
+.meta-bar-wrap{padding:8px 12px;background:var(--bk2);border-bottom:0.5px solid var(--bd);}
+.meta-info{display:flex;justify-content:space-between;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
+.meta-bar-bg{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.meta-bar-fg{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width .8s ease;}
+.live-row{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:var(--bk2);border-bottom:0.5px solid var(--bd);}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:2px;color:var(--wh2);text-transform:uppercase;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.conn-status{font-size:10px;letter-spacing:1px;color:var(--wh2);display:flex;gap:10px;}
+.cs{display:flex;align-items:center;gap:4px;}
+.cs-dot{width:7px;height:7px;border-radius:50%;background:#555;transition:background .3s;}
+.cs-dot.ok{background:#5DCAA5;}.cs-dot.err{background:#F0997B;}.cs-dot.wait{background:#C9A84C;animation:blink 1s infinite;}
+.week-tabs-rnk{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);overflow-x:auto;}
+.wtab{flex:1;min-width:55px;padding:8px 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Barlow Condensed',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
+.wtab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
+.tbl-head{display:grid;grid-template-columns:32px 1fr 48px 52px;gap:0;padding:8px 12px;border-bottom:0.5px solid var(--bd);background:var(--bk2);}
+.th{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);font-weight:600;text-align:center;}
+.th:nth-child(2){text-align:left;}
+.row{display:grid;grid-template-columns:32px 1fr 48px 52px;gap:0;padding:10px 12px;border-bottom:0.5px solid rgba(201,168,76,0.08);align-items:center;}
+.row.r1{background:rgba(201,168,76,0.10);}
+.row.r2{background:rgba(180,180,180,0.04);}
+.row.r3{background:rgba(180,100,50,0.04);}
+.pos{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--wh2);text-align:center;}
+.r1 .pos{color:var(--gold);font-size:17px;}.r2 .pos{color:#C0C0C0;}.r3 .pos{color:#CD7F32;}
+.tname{font-size:15px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--wh);}
+.r1 .tname{color:var(--gold-light);}
+.tsrc{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--wh2);opacity:.55;}
+.barmini{height:2px;background:rgba(255,255,255,0.07);border-radius:1px;margin-top:3px;overflow:hidden;}
+.barfill{height:100%;border-radius:1px;background:var(--gold);transition:width .6s ease;}
+.r2 .barfill{background:#C0C0C0;}.r3 .barfill{background:#CD7F32;}
+.cell{text-align:center;font-size:14px;font-weight:600;color:var(--wh2);}
+.cell.tot{font-family:'Playfair Display',serif;font-size:18px;color:var(--wh);}
+.r1 .cell.tot{color:var(--gold);}
+.mpct{font-size:9px;color:var(--gold-dark);display:block;font-weight:300;}
+.tot-row{display:grid;grid-template-columns:32px 1fr 48px 52px;gap:0;padding:11px 12px;border-top:1px solid var(--bd);background:var(--bk2);}
+.tot-lbl{grid-column:1/3;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;align-self:center;}
+.tot-num{text-align:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold);}
+.cfg{padding:1rem;}
+.fb-card{background:var(--bk2);border:0.5px solid var(--bd);border-radius:10px;padding:1rem;margin-bottom:10px;}
+.fb-head{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.m-input{padding:5px 8px;font-size:14px;border-radius:5px;border:0.5px solid var(--bd);background:#1A1A1A;color:var(--wh);text-align:center;font-family:'Barlow Condensed',sans-serif;width:100%;}
+.col-hdr{font-size:10px;color:var(--wh2);text-align:center;}
+.btn-gold{width:100%;margin-top:10px;padding:10px;font-size:13px;letter-spacing:2px;text-transform:uppercase;border-radius:6px;border:none;background:var(--gold);color:#0A0A0A;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;}
+.log-box{margin:8px 12px;background:#0A0A0A;border:0.5px solid var(--bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#5DCAA5;line-height:1.8;font-family:monospace;max-height:70px;overflow-y:auto;word-break:break-all;}
+</style>
+
+<div class="root">
+  <div class="hdr">
+    <div class="logo">GR Consórcio</div>
+    <div class="logo-sub">Ranking de Equipes</div>
+    <div class="month-badge" id="monthBadge">—</div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goTab('ranking')">Ranking</button>
+    <button class="nav-tab" onclick="goTab('manual')">Select & Extra</button>
+  </div>
+
+  <div class="panel active" id="panel-ranking">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-lbl">Total cotas</div><div class="stat-val" id="totCotas">—</div></div>
+      <div class="stat"><div class="stat-lbl">Vendas dia</div><div class="stat-val" id="vendasDia">—</div></div>
+    </div>
+    <div class="meta-bar-wrap">
+      <div class="meta-info"><span>Meta: <span id="metaVal">—</span></span><span id="metaPct">—</span></div>
+      <div class="meta-bar-bg"><div class="meta-bar-fg" id="metaFg" style="width:0%"></div></div>
+    </div>
+    <div class="live-row">
+      <div class="conn-status">
+        <span class="cs"><span class="cs-dot wait" id="dotChis"></span>Chis</span>
+        <span class="cs"><span class="cs-dot wait" id="dotDanylo"></span>Danylo</span>
+      </div>
+      <span class="live-badge"><span class="live-dot"></span>ao vivo</span>
+    </div>
+    <div class="week-tabs-rnk" id="weekTabs"></div>
+    <div class="tbl-head">
+      <div class="th">#</div><div class="th">Equipe</div><div class="th">Sem.</div><div class="th">Total</div>
+    </div>
+    <div id="rankRows"></div>
+    <div class="tot-row">
+      <div class="tot-lbl">Total geral</div><div></div>
+      <div class="tot-num" id="totSem">—</div>
+      <div class="tot-num" id="totGeral">—</div>
+    </div>
+    <div class="log-box" id="logBox">Aguardando Firebase...</div>
+  </div>
+
+  <div class="panel" id="panel-manual">
+    <div class="cfg">
+      <div class="fb-card">
+        <div class="fb-head">Equipe Select</div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
+          <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
+          <div style="font-size:13px;color:var(--gold);align-self:center;">Select</div>
+          <input class="m-input" id="sel-s0" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="sel-s1" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="sel-s2" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="sel-s3" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="sel-s4" type="number" min="0" value="0" oninput="updateManual()"/>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <span style="font-size:11px;color:var(--wh2);">Meta</span>
+          <input class="m-input" id="sel-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
+        </div>
+      </div>
+      <div class="fb-card">
+        <div class="fb-head">Equipe Extra</div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
+          <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
+          <div style="font-size:13px;color:var(--gold);align-self:center;">Extra</div>
+          <input class="m-input" id="ext-s0" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="ext-s1" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="ext-s2" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="ext-s3" type="number" min="0" value="0" oninput="updateManual()"/>
+          <input class="m-input" id="ext-s4" type="number" min="0" value="0" oninput="updateManual()"/>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <span style="font-size:11px;color:var(--wh2);">Meta</span>
+          <input class="m-input" id="ext-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
+        </div>
+      </div>
+      <button class="btn-gold" onclick="goTab('ranking')">Ver ranking</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const CFG_CHIS={apiKey:"AIzaSyAStKygESgvDlcqL8AcPd2K6cQLDS4IpuQ",authDomain:"ranking-chis.firebaseapp.com",databaseURL:"https://ranking-chis-default-rtdb.firebaseio.com",projectId:"ranking-chis",appId:"1:817538775589:web:23e5710cad96ef674a1dcc"};
+const CFG_DANYLO={apiKey:"AIzaSyCX7ocMbAK95WIKlTR-qSUojxEhDwb1mCo",authDomain:"homegr-71157.firebaseapp.com",databaseURL:"https://homegr-71157-default-rtdb.firebaseio.com",projectId:"homegr-71157",appId:"1:353566889780:web:aa363de0a0c3986a243761"};
+
+let selWeek='total', vendasDia=0;
+let danyloFantasma=0; // cotasFantasma da config
+
+let teams=[
+  {nome:'Chis',  semanas:[], cotasFantasma:0, meta:70,  src:'firebase'},
+  {nome:'Danylo',semanas:[], cotasFantasma:0, meta:100, src:'firebase'},
+  {nome:'Select',semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
+  {nome:'Extra', semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
+];
+
+const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+document.getElementById('monthBadge').textContent=meses[new Date().getMonth()]+' '+new Date().getFullYear();
+
+function log(m){const b=document.getElementById('logBox');b.textContent+='\n'+m;b.scrollTop=b.scrollHeight;}
+
+function goTab(t){
+  ['ranking','manual'].forEach(id=>document.getElementById('panel-'+id).classList.toggle('active',id===t));
+  document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['ranking','manual'][i]===t));
+}
+
+function updateManual(){
+  const sel=teams.find(t=>t.nome==='Select');
+  const ext=teams.find(t=>t.nome==='Extra');
+  for(let i=0;i<5;i++){
+    sel.semanas[i]=parseInt(document.getElementById('sel-s'+i).value)||0;
+    ext.semanas[i]=parseInt(document.getElementById('ext-s'+i).value)||0;
+  }
+  sel.meta=parseInt(document.getElementById('sel-meta').value)||40;
+  ext.meta=parseInt(document.getElementById('ext-meta').value)||40;
+  render();
+}
+
+function getTotal(t){
+  const somaSemanas=(t.semanas||[]).reduce((a,b)=>a+(b||0),0);
+  return somaSemanas + (t.cotasFantasma||0);
+}
+
+function getVal(t,week){
+  if(week==='total') return getTotal(t);
+  return (t.semanas||[])[parseInt(week)]||0;
+}
+
+function somarSemanas(dados){
+  const tot=[];
+  Object.values(dados||{}).forEach(v=>{
+    if(!v||v.s==null)return;
+    const arr=Array.isArray(v.s)?v.s:Object.values(v.s);
+    arr.forEach((val,i)=>{tot[i]=(tot[i]||0)+(Number(val)||0);});
+  });
+  return tot;
+}
+
+function render(){
+  const maxW=Math.max(...teams.map(t=>(t.semanas||[]).length),2);
+  const wt=document.getElementById('weekTabs');
+  wt.innerHTML='';
+  const mk=(lbl,val)=>{
+    const b=document.createElement('button');
+    b.className='wtab'+(selWeek===val?' active':'');
+    b.textContent=lbl;
+    b.onclick=()=>{selWeek=val;render();};
+    wt.appendChild(b);
+  };
+  mk('Total','total');
+  for(let i=0;i<maxW;i++)mk('Sem.'+(i+1),String(i));
+
+  const sorted=[...teams].sort((a,b)=>getVal(b,selWeek)-getVal(a,selWeek));
+  const maxV=Math.max(...sorted.map(t=>getVal(t,selWeek)),1);
+  const grand=teams.reduce((s,t)=>s+getTotal(t),0);
+  const semTot=sorted.reduce((s,t)=>s+getVal(t,selWeek),0);
+  const metaTot=teams.reduce((s,t)=>s+(t.meta||0),0);
+  const pct=metaTot>0?Math.min(Math.round(grand/metaTot*100),100):0;
+
+  document.getElementById('totCotas').textContent=grand;
+  document.getElementById('vendasDia').textContent=vendasDia;
+  document.getElementById('metaVal').textContent=metaTot;
+  document.getElementById('metaPct').textContent=pct+'%';
+  document.getElementById('metaFg').style.width=pct+'%';
+  document.getElementById('totGeral').textContent=grand;
+  document.getElementById('totSem').textContent=semTot;
+
+  const rows=document.getElementById('rankRows');
+  rows.innerHTML='';
+  sorted.forEach((t,i)=>{
+    const v=getVal(t,selWeek);
+    const totReal=getTotal(t);
+    const bp=Math.round(v/maxV*100);
+    const mp=t.meta>0?Math.round(totReal/t.meta*100):null;
+    const cls=i===0?'r1':i===1?'r2':i===2?'r3':'';
+    const medal=i===0?'①':i===1?'②':i===2?'③':(i+1);
+    const fantasmaStr=t.cotasFantasma>0?` +${t.cotasFantasma}★`:'';
+    const row=document.createElement('div');
+    row.className='row '+cls;
+    row.innerHTML=`<div class="pos">${medal}</div>
+      <div><div class="tname">${t.nome}</div>
+      <div class="tsrc">${t.src==='firebase'?'⚡ live':'✎ manual'} · meta ${t.meta}${fantasmaStr}</div>
+      <div class="barmini"><div class="barfill" style="width:${bp}%"></div></div></div>
+      <div class="cell">${v}</div>
+      <div class="cell tot">${totReal}${mp!==null?`<span class="mpct">${mp}%</span>`:''}</div>`;
+    rows.appendChild(row);
+  });
+}
+
+window.addEventListener('load',function(){
+  log('Firebase carregando...');
+  try{
+    const appC=firebase.initializeApp(CFG_CHIS,'chis');
+    const appD=firebase.initializeApp(CFG_DANYLO,'danylo');
+    const dbC=firebase.database(appC);
+    const dbD=firebase.database(appD);
+    log('OK');
+
+    // CHIS config
+    dbC.ref('equipe_chis/config').on('value',s=>{
+      const c=s.val()||{};
+      const t=teams.find(x=>x.nome==='Chis');
+      if(c.meta) t.meta=c.meta;
+      if(c.cotasFantasma!=null) t.cotasFantasma=Number(c.cotasFantasma)||0;
+      if(c.vendas_dia!=null) vendasDia=c.vendas_dia;
+      render();
+    });
+
+    // CHIS dados
+    dbC.ref('equipe_chis/dados').on('value',s=>{
+      const t=teams.find(x=>x.nome==='Chis');
+      t.semanas=somarSemanas(s.val()||{});
+      document.getElementById('dotChis').className='cs-dot ok';
+      log('[Chis] sem='+JSON.stringify(t.semanas)+' fantasma='+t.cotasFantasma+' total='+getTotal(t));
+      render();
+    },e=>{document.getElementById('dotChis').className='cs-dot err';log('[Chis]ERR:'+e.message);});
+
+    // DANYLO config — lê cotasFantasma aqui!
+    dbD.ref('equipe_danylo/config').on('value',s=>{
+      const c=s.val()||{};
+      const t=teams.find(x=>x.nome==='Danylo');
+      if(c.meta) t.meta=c.meta;
+      if(c.cotasFantasma!=null) t.cotasFantasma=Number(c.cotasFantasma)||0;
+      if(c.vendas_dia!=null) vendasDia+=c.vendas_dia;
+      log('[Danylo] config meta='+t.meta+' cotasFantasma='+t.cotasFantasma);
+      render();
+    });
+
+    // DANYLO dados
+    dbD.ref('equipe_danylo/dados').on('value',s=>{
+      const t=teams.find(x=>x.nome==='Danylo');
+      const dados=s.val()||{};
+      const vends={};
+      Object.entries(dados).forEach(([k,v])=>{if(v&&v.s!=null)vends[k]=v;});
+      t.semanas=somarSemanas(vends);
+      document.getElementById('dotDanylo').className='cs-dot ok';
+      log('[Danylo] sem='+JSON.stringify(t.semanas)+' fantasma='+t.cotasFantasma+' total='+getTotal(t));
+      render();
+    },e=>{document.getElementById('dotDanylo').className='cs-dot err';log('[Danylo]ERR:'+e.message);});
+
+  }catch(e){log('ERRO:'+e.message);}
+});
+
+render();
+</script>
