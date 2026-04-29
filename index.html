@@ -278,6 +278,9 @@ function goTab(t){
   ['ranking','manual'].forEach(id=>document.getElementById('panel-'+id).classList.toggle('active',id===t));
   document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['ranking','manual'][i]===t));
 }
+let dbManual=null;
+let saveTimer=null;
+
 function updateManual(){
   const sel=teams.find(t=>t.nome==='Select');
   const ext=teams.find(t=>t.nome==='Extra');
@@ -288,6 +291,30 @@ function updateManual(){
   sel.meta=parseInt(document.getElementById('sel-meta').value)||40;
   ext.meta=parseInt(document.getElementById('ext-meta').value)||40;
   render();
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveManualToFirebase, 800);
+}
+
+function saveManualToFirebase(){
+  if(!dbManual) return;
+  const sel=teams.find(t=>t.nome==='Select');
+  const ext=teams.find(t=>t.nome==='Extra');
+  const payload={
+    select:{ semanas: sel.semanas, meta: sel.meta },
+    extra:{  semanas: ext.semanas, meta: ext.meta  }
+  };
+  dbManual.ref('equipes_manuais').set(payload)
+    .then(()=>log('[Manual] Salvo no Firebase ✓'))
+    .catch(e=>log('[Manual] Erro ao salvar: '+e.message));
+}
+
+function loadManualInputs(sel, ext){
+  for(let i=0;i<5;i++){
+    document.getElementById('sel-s'+i).value = sel.semanas[i]||0;
+    document.getElementById('ext-s'+i).value = ext.semanas[i]||0;
+  }
+  document.getElementById('sel-meta').value = sel.meta||40;
+  document.getElementById('ext-meta').value = ext.meta||40;
 }
 function getTotal(t){return (t.semanas||[]).reduce((a,b)=>a+(b||0),0)+(t.cotasFantasma||0);}
 function getVal(t,week){
@@ -390,6 +417,26 @@ window.addEventListener('load',function(){
       log('[Danylo] total='+getTotal(t));
       render();
     },e=>{document.getElementById('dotDanylo').className='cs-dot err';log('[Danylo]ERR:'+e.message);});
+
+    // ── Equipes manuais (Select & Extra) ──
+    dbManual = dbD;
+    dbD.ref('equipes_manuais').on('value', s=>{
+      const d = s.val();
+      if(!d) { log('[Manual] Nenhum dado salvo ainda'); return; }
+      const sel = teams.find(x=>x.nome==='Select');
+      const ext = teams.find(x=>x.nome==='Extra');
+      if(d.select){
+        sel.semanas = d.select.semanas || [0,0,0,0,0];
+        sel.meta    = d.select.meta    || 40;
+      }
+      if(d.extra){
+        ext.semanas = d.extra.semanas || [0,0,0,0,0];
+        ext.meta    = d.extra.meta    || 40;
+      }
+      loadManualInputs(sel, ext);
+      log('[Manual] Dados carregados do Firebase ✓');
+      render();
+    }, e=>{ log('[Manual] Erro ao carregar: '+e.message); });
 
   }catch(e){log('ERRO:'+e.message);}
 });
