@@ -153,8 +153,6 @@ const CFG_CHIS={apiKey:"AIzaSyAStKygESgvDlcqL8AcPd2K6cQLDS4IpuQ",authDomain:"ran
 const CFG_DANYLO={apiKey:"AIzaSyCX7ocMbAK95WIKlTR-qSUojxEhDwb1mCo",authDomain:"homegr-71157.firebaseapp.com",databaseURL:"https://homegr-71157-default-rtdb.firebaseio.com",projectId:"homegr-71157",appId:"1:353566889780:web:aa363de0a0c3986a243761"};
 
 let selWeek='total', vendasDia=0;
-let danyloFantasma=0; // cotasFantasma da config
-
 let teams=[
   {nome:'Chis',  semanas:[], cotasFantasma:0, meta:70,  src:'firebase'},
   {nome:'Danylo',semanas:[], cotasFantasma:0, meta:100, src:'firebase'},
@@ -166,12 +164,10 @@ const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agos
 document.getElementById('monthBadge').textContent=meses[new Date().getMonth()]+' '+new Date().getFullYear();
 
 function log(m){const b=document.getElementById('logBox');b.textContent+='\n'+m;b.scrollTop=b.scrollHeight;}
-
 function goTab(t){
   ['ranking','manual'].forEach(id=>document.getElementById('panel-'+id).classList.toggle('active',id===t));
   document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['ranking','manual'][i]===t));
 }
-
 function updateManual(){
   const sel=teams.find(t=>t.nome==='Select');
   const ext=teams.find(t=>t.nome==='Extra');
@@ -183,17 +179,11 @@ function updateManual(){
   ext.meta=parseInt(document.getElementById('ext-meta').value)||40;
   render();
 }
-
-function getTotal(t){
-  const somaSemanas=(t.semanas||[]).reduce((a,b)=>a+(b||0),0);
-  return somaSemanas + (t.cotasFantasma||0);
-}
-
+function getTotal(t){return (t.semanas||[]).reduce((a,b)=>a+(b||0),0)+(t.cotasFantasma||0);}
 function getVal(t,week){
   if(week==='total') return getTotal(t);
   return (t.semanas||[])[parseInt(week)]||0;
 }
-
 function somarSemanas(dados){
   const tot=[];
   Object.values(dados||{}).forEach(v=>{
@@ -203,18 +193,11 @@ function somarSemanas(dados){
   });
   return tot;
 }
-
 function render(){
   const maxW=Math.max(...teams.map(t=>(t.semanas||[]).length),2);
   const wt=document.getElementById('weekTabs');
   wt.innerHTML='';
-  const mk=(lbl,val)=>{
-    const b=document.createElement('button');
-    b.className='wtab'+(selWeek===val?' active':'');
-    b.textContent=lbl;
-    b.onclick=()=>{selWeek=val;render();};
-    wt.appendChild(b);
-  };
+  const mk=(lbl,val)=>{const b=document.createElement('button');b.className='wtab'+(selWeek===val?' active':'');b.textContent=lbl;b.onclick=()=>{selWeek=val;render();};wt.appendChild(b);};
   mk('Total','total');
   for(let i=0;i<maxW;i++)mk('Sem.'+(i+1),String(i));
 
@@ -242,12 +225,11 @@ function render(){
     const mp=t.meta>0?Math.round(totReal/t.meta*100):null;
     const cls=i===0?'r1':i===1?'r2':i===2?'r3':'';
     const medal=i===0?'①':i===1?'②':i===2?'③':(i+1);
-    const fantasmaStr=t.cotasFantasma>0?` +${t.cotasFantasma}★`:'';
     const row=document.createElement('div');
     row.className='row '+cls;
     row.innerHTML=`<div class="pos">${medal}</div>
       <div><div class="tname">${t.nome}</div>
-      <div class="tsrc">${t.src==='firebase'?'⚡ live':'✎ manual'} · meta ${t.meta}${fantasmaStr}</div>
+      <div class="tsrc">${t.src==='firebase'?'⚡ live':'✎ manual'} · meta ${t.meta}</div>
       <div class="barmini"><div class="barfill" style="width:${bp}%"></div></div></div>
       <div class="cell">${v}</div>
       <div class="cell tot">${totReal}${mp!==null?`<span class="mpct">${mp}%</span>`:''}</div>`;
@@ -256,15 +238,13 @@ function render(){
 }
 
 window.addEventListener('load',function(){
-  log('Firebase carregando...');
+  log('Iniciando...');
   try{
     const appC=firebase.initializeApp(CFG_CHIS,'chis');
     const appD=firebase.initializeApp(CFG_DANYLO,'danylo');
     const dbC=firebase.database(appC);
     const dbD=firebase.database(appD);
-    log('OK');
 
-    // CHIS config
     dbC.ref('equipe_chis/config').on('value',s=>{
       const c=s.val()||{};
       const t=teams.find(x=>x.nome==='Chis');
@@ -273,28 +253,23 @@ window.addEventListener('load',function(){
       if(c.vendas_dia!=null) vendasDia=c.vendas_dia;
       render();
     });
-
-    // CHIS dados
     dbC.ref('equipe_chis/dados').on('value',s=>{
       const t=teams.find(x=>x.nome==='Chis');
       t.semanas=somarSemanas(s.val()||{});
       document.getElementById('dotChis').className='cs-dot ok';
-      log('[Chis] sem='+JSON.stringify(t.semanas)+' fantasma='+t.cotasFantasma+' total='+getTotal(t));
+      log('[Chis] total='+getTotal(t));
       render();
     },e=>{document.getElementById('dotChis').className='cs-dot err';log('[Chis]ERR:'+e.message);});
 
-    // DANYLO config — lê cotasFantasma aqui!
     dbD.ref('equipe_danylo/config').on('value',s=>{
       const c=s.val()||{};
       const t=teams.find(x=>x.nome==='Danylo');
       if(c.meta) t.meta=c.meta;
       if(c.cotasFantasma!=null) t.cotasFantasma=Number(c.cotasFantasma)||0;
-      if(c.vendas_dia!=null) vendasDia+=c.vendas_dia;
-      log('[Danylo] config meta='+t.meta+' cotasFantasma='+t.cotasFantasma);
+      if(c.vendas_dia!=null) vendasDia+=Number(c.vendas_dia)||0;
+      log('[Danylo] config cotasFantasma='+t.cotasFantasma);
       render();
     });
-
-    // DANYLO dados
     dbD.ref('equipe_danylo/dados').on('value',s=>{
       const t=teams.find(x=>x.nome==='Danylo');
       const dados=s.val()||{};
@@ -302,12 +277,11 @@ window.addEventListener('load',function(){
       Object.entries(dados).forEach(([k,v])=>{if(v&&v.s!=null)vends[k]=v;});
       t.semanas=somarSemanas(vends);
       document.getElementById('dotDanylo').className='cs-dot ok';
-      log('[Danylo] sem='+JSON.stringify(t.semanas)+' fantasma='+t.cotasFantasma+' total='+getTotal(t));
+      log('[Danylo] total='+getTotal(t));
       render();
     },e=>{document.getElementById('dotDanylo').className='cs-dot err';log('[Danylo]ERR:'+e.message);});
 
   }catch(e){log('ERRO:'+e.message);}
 });
-
 render();
 </script>
