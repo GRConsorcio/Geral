@@ -1,10 +1,11 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap');
 :root{--gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;--bk:#0A0A0A;--bk2:#111111;--bk3:#1A1A1A;--wh:#F5F0E8;--wh2:#DDD8CC;--bd:rgba(201,168,76,0.25);}
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bk);}
-.root{background:var(--bk);font-family:'Montserrat',sans-serif;color:var(--wh);display:flex;flex-direction:column;min-height:100vh;}
+html,body{height:100%;background:var(--bk);overflow:hidden;}
+.root{background:var(--bk);font-family:'Montserrat',sans-serif;color:var(--wh);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 
 /* HEADER */
 .hdr{background:var(--bk2);border-bottom:1px solid var(--bd);padding:.9rem 1rem .7rem;text-align:center;position:relative;flex-shrink:0;}
@@ -18,7 +19,7 @@ html,body{height:100%;background:var(--bk);}
 .nav-tabs{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);flex-shrink:0;}
 .nav-tab{flex:1;padding:9px 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Montserrat',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
 .nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
-.panel{display:none;}.panel.active{display:block;}
+.panel{display:none;}.panel.active{display:flex;flex-direction:column;flex:1;min-height:0;}
 
 /* MAIN LAYOUT: sidebar + table */
 .ranking-layout{display:flex;flex:1;min-height:0;}
@@ -96,14 +97,84 @@ html,body{height:100%;background:var(--bk);}
 .right-content{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
 
 .week-tabs-rnk{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);overflow-x:auto;flex-shrink:0;}
-.wtab{flex:1;min-width:50px;padding:8px 4px;font-size:9px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Montserrat',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
+.wtab{flex:1;min-width:72px;padding:8px 4px;font-size:9px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Montserrat',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
 .wtab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
+
+/* ── RESPONSIVO TELEFONE (padrão já está ok, pequenos ajustes) ── */
+@media(max-width:480px){
+  .sidebar{width:64px;}
+  .metric-val{font-size:18px;}
+  .metric-val.small{font-size:13px;}
+  .metric-lbl{font-size:6px;}
+  .tname{font-size:11px;}
+  .cell{font-size:11px;}
+  .cell.tot{font-size:13px;}
+  .pos{font-size:12px;}
+  .r1 .pos{font-size:14px;}
+  .row{padding:7px 8px;}
+  .wtab{font-size:8px;min-width:64px;padding:6px 3px;}
+  .hdr{padding:.6rem .8rem .5rem;}
+  .logo-img{height:44px;}
+  .logo-sub{font-size:8px;}
+  .month-badge{font-size:8px;padding:2px 8px;}
+}
+
+/* ── RESPONSIVO TV / DESKTOP GRANDE ── */
+@media(min-width:900px){
+  .sidebar{width:140px;padding:20px 0;gap:10px;}
+  .metric-card{padding:18px 8px;}
+  .metric-lbl{font-size:10px;letter-spacing:2px;}
+  .metric-val{font-size:42px;}
+  .metric-val.small{font-size:28px;}
+  .meta-pct-lbl{font-size:11px;}
+  .live-lbl{font-size:9px;}
+  .cs{font-size:10px;}
+  .cs-dot{width:9px;height:9px;}
+  .live-dot{width:9px;height:9px;}
+  .logo-img{height:80px;}
+  .logo-sub{font-size:13px;letter-spacing:6px;}
+  .month-badge{font-size:12px;padding:4px 16px;}
+  .hdr{padding:1.4rem 1rem 1rem;}
+  .nav-tab{font-size:13px;padding:13px 8px;letter-spacing:3px;}
+  .wtab{font-size:12px;min-width:110px;padding:11px 6px;}
+  .tbl-head{grid-template-columns:48px 1fr 80px 90px;padding:10px 18px;}
+  .th{font-size:11px;letter-spacing:3px;}
+  .row{grid-template-columns:48px 1fr 80px 90px;padding:14px 18px;}
+  .tname{font-size:20px;letter-spacing:2px;}
+  .tsrc{font-size:11px;}
+  .pos{font-size:22px;}
+  .r1 .pos{font-size:26px;}
+  .cell{font-size:20px;}
+  .cell.tot{font-size:26px;}
+  .mpct{font-size:11px;}
+  .tot-row{grid-template-columns:48px 1fr 80px 90px;padding:16px 18px;}
+  .tot-lbl{font-size:13px;letter-spacing:4px;}
+  .tot-num{font-size:24px;}
+  .log-box{font-size:13px;max-height:80px;margin:8px 14px;}
+  .barmini{height:3px;margin-top:5px;}
+}
+
+/* ── TV MUITO GRANDE (1440px+) ── */
+@media(min-width:1440px){
+  .sidebar{width:180px;}
+  .metric-val{font-size:56px;}
+  .metric-val.small{font-size:36px;}
+  .metric-lbl{font-size:13px;}
+  .tname{font-size:26px;}
+  .cell{font-size:26px;}
+  .cell.tot{font-size:34px;}
+  .pos{font-size:28px;}
+  .r1 .pos{font-size:34px;}
+  .row{padding:18px 24px;}
+  .tbl-head{padding:12px 24px;}
+  .logo-img{height:100px;}
+}
 
 .tbl-head{display:grid;grid-template-columns:28px 1fr 44px 50px;gap:0;padding:7px 10px;border-bottom:0.5px solid var(--bd);background:var(--bk2);flex-shrink:0;}
 .th{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);font-weight:600;text-align:center;}
 .th:nth-child(2){text-align:left;}
 
-.rows-wrap{flex:1;overflow-y:auto;}
+.rows-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
 .row{display:grid;grid-template-columns:28px 1fr 44px 50px;gap:0;padding:9px 10px;border-bottom:0.5px solid rgba(201,168,76,0.08);align-items:center;}
 .row.r1{background:rgba(201,168,76,0.10);}
@@ -336,7 +407,7 @@ function render(){
   wt.innerHTML='';
   const mk=(lbl,val)=>{const b=document.createElement('button');b.className='wtab'+(selWeek===val?' active':'');b.textContent=lbl;b.onclick=()=>{selWeek=val;render();};wt.appendChild(b);};
   mk('Total','total');
-  for(let i=0;i<maxW;i++)mk('S.'+(i+1),String(i));
+  for(let i=0;i<maxW;i++)mk('Semana '+(i+1),String(i));
 
   const sorted=[...teams].sort((a,b)=>getVal(b,selWeek)-getVal(a,selWeek));
   const maxV=Math.max(...sorted.map(t=>getVal(t,selWeek)),1);
@@ -357,6 +428,7 @@ function render(){
   rows.innerHTML='';
   sorted.forEach((t,i)=>{
     const v=getVal(t,selWeek);
+    const acum=selWeek==='total'?getTotal(t):(t.semanas||[]).slice(0,parseInt(selWeek)+1).reduce((a,b)=>a+(b||0),0);
     const totReal=getTotal(t);
     const bp=Math.round(v/maxV*100);
     const mp=t.meta>0?Math.round(totReal/t.meta*100):null;
@@ -368,7 +440,7 @@ function render(){
       <div><div class="tname">${t.nome}</div>
       <div class="tsrc">${t.src==='firebase'?'⚡ live':'✎ manual'} · meta ${t.meta}</div>
       <div class="barmini"><div class="barfill" style="width:${bp}%"></div></div></div>
-      <div class="cell">${v}</div>
+      <div class="cell">${v}<span class="mpct">acum. ${acum}</span></div>
       <div class="cell tot">${totReal}${mp!==null?`<span class="mpct">${mp}%</span>`:''}</div>`;
     rows.appendChild(row);
   });
