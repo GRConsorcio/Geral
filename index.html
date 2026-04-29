@@ -1,151 +1,299 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>GR Consórcio – Controle de Vendas</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow+Condensed:wght@300;400;600&display=swap');
-:root{--gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;--bk:#0A0A0A;--bk2:#111111;--bk3:#1A1A1A;--wh:#F5F0E8;--wh2:#DDD8CC;--bd:rgba(201,168,76,0.25);}
+:root{
+  --gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;
+  --bk:#0D0D0D;--bk2:#141414;--bk3:#1C1C1C;--bk4:#222222;
+  --wh:#F0EAD6;--wh2:#A09880;
+  --bd:rgba(201,168,76,0.18);
+  --green:#5DCAA5;--red:#F0997B;
+  --r1-bg:rgba(201,168,76,0.08);
+  --r2-bg:rgba(180,180,180,0.04);
+  --r3-bg:rgba(180,100,50,0.04);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-.root{background:var(--bk);font-family:'Barlow Condensed',sans-serif;color:var(--wh);padding-bottom:2rem;}
-.hdr{background:var(--bk2);border-bottom:1px solid var(--bd);padding:1.1rem 1rem .9rem;text-align:center;position:relative;}
-.hdr::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:180px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
-.logo-sub{font-size:10px;letter-spacing:5px;color:var(--wh2);text-transform:uppercase;margin-top:2px;font-weight:300;}
-.month-badge{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:0.5px solid var(--bd);padding:3px 12px;border-radius:20px;}
+body{background:var(--bk);font-family:'Rajdhani',sans-serif;color:var(--wh);min-height:100vh;}
+
+/* ── HEADER ─────────────────────────────── */
+.hdr{
+  background:var(--bk2);
+  border-bottom:1px solid var(--bd);
+  padding:.75rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;
+}
+.hdr::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.hdr-left{display:flex;align-items:center;gap:10px;}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:2px;color:var(--green);text-transform:uppercase;background:rgba(93,202,165,0.1);border:0.5px solid rgba(93,202,165,0.3);padding:3px 10px;border-radius:20px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--gold);text-align:center;line-height:1;}
+.hdr-sub{font-size:10px;letter-spacing:4px;color:var(--wh2);text-align:center;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.conn-status{display:flex;gap:8px;}
+.cs{display:flex;align-items:center;gap:4px;font-size:10px;letter-spacing:1px;color:var(--wh2);}
+.cs-dot{width:7px;height:7px;border-radius:50%;background:#555;}
+.cs-dot.ok{background:var(--green);}.cs-dot.err{background:var(--red);}.cs-dot.wait{background:var(--gold);animation:blink 1s infinite;}
+.month-badge{font-size:10px;letter-spacing:2px;color:var(--gold);border:0.5px solid var(--bd);padding:3px 10px;border-radius:20px;text-transform:uppercase;}
+
+/* ── NAV TABS ───────────────────────────── */
 .nav-tabs{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);}
-.nav-tab{flex:1;padding:10px 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Barlow Condensed',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
+.nav-tab{flex:1;max-width:160px;padding:9px 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Rajdhani',sans-serif;font-weight:600;border-bottom:2px solid transparent;transition:all .2s;}
 .nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
 .panel{display:none;}.panel.active{display:block;}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);}
-.stat{background:var(--bk3);padding:.9rem;text-align:center;}
-.stat-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--wh2);font-weight:300;margin-bottom:3px;}
-.stat-val{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--gold);line-height:1;}
-.meta-bar-wrap{padding:8px 12px;background:var(--bk2);border-bottom:0.5px solid var(--bd);}
-.meta-info{display:flex;justify-content:space-between;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
-.meta-bar-bg{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+
+/* ── MAIN LAYOUT: sidebar + content ─────── */
+.main-layout{display:flex;height:calc(100vh - 88px);} /* 88px = hdr + nav approx */
+.sidebar{
+  width:140px;min-width:140px;
+  background:var(--bk2);
+  border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;
+  overflow-y:auto;flex-shrink:0;
+}
+.content-area{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0;}
+
+/* sidebar blocks */
+.sb-block{
+  padding:1rem .85rem;
+  border-bottom:0.5px solid var(--bd);
+  display:flex;flex-direction:column;gap:4px;
+  flex:1;justify-content:center;
+}
+.sb-block:last-child{border-bottom:none;}
+.sb-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--wh2);font-weight:600;line-height:1.3;}
+.sb-val{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--wh);line-height:1;margin-top:2px;}
+.sb-val.gold{color:var(--gold);}
+.sb-meta-txt{font-size:10px;color:var(--green);letter-spacing:1px;font-weight:600;}
+.sb-pct-txt{font-size:11px;color:var(--wh2);letter-spacing:1px;}
+.meta-bar-bg{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-top:4px;}
 .meta-bar-fg{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width .8s ease;}
-.live-row{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:var(--bk2);border-bottom:0.5px solid var(--bd);}
-.live-badge{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:2px;color:var(--wh2);text-transform:uppercase;}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.conn-status{font-size:10px;letter-spacing:1px;color:var(--wh2);display:flex;gap:10px;}
-.cs{display:flex;align-items:center;gap:4px;}
-.cs-dot{width:7px;height:7px;border-radius:50%;background:#555;transition:background .3s;}
-.cs-dot.ok{background:#5DCAA5;}.cs-dot.err{background:#F0997B;}.cs-dot.wait{background:#C9A84C;animation:blink 1s infinite;}
-.week-tabs-rnk{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);overflow-x:auto;}
-.wtab{flex:1;min-width:55px;padding:8px 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Barlow Condensed',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
+.sb-conn{display:flex;flex-direction:column;gap:6px;}
+.cs{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:1px;color:var(--wh2);}
+.cs-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;}
+.cs-dot.ok{background:var(--green);}.cs-dot.err{background:var(--red);}.cs-dot.wait{background:var(--gold);animation:blink 1s infinite;}
+
+/* ── WEEK TABS ──────────────────────────── */
+.week-tabs{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);overflow-x:auto;}
+.wtab{flex:1;min-width:60px;padding:8px 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Rajdhani',sans-serif;font-weight:600;border-bottom:2px solid transparent;transition:all .2s;}
 .wtab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
-.tbl-head{display:grid;grid-template-columns:32px 1fr 48px 52px;gap:0;padding:8px 12px;border-bottom:0.5px solid var(--bd);background:var(--bk2);}
-.th{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);font-weight:600;text-align:center;}
-.th:nth-child(2){text-align:left;}
-.row{display:grid;grid-template-columns:32px 1fr 48px 52px;gap:0;padding:10px 12px;border-bottom:0.5px solid rgba(201,168,76,0.08);align-items:center;}
-.row.r1{background:rgba(201,168,76,0.10);}
-.row.r2{background:rgba(180,180,180,0.04);}
-.row.r3{background:rgba(180,100,50,0.04);}
-.pos{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--wh2);text-align:center;}
-.r1 .pos{color:var(--gold);font-size:17px;}.r2 .pos{color:#C0C0C0;}.r3 .pos{color:#CD7F32;}
-.tname{font-size:15px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--wh);}
+
+/* ── TABLE ──────────────────────────────── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--bk2);}
+thead th{
+  padding:10px 8px;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold-dark);font-weight:700;text-align:center;
+  border-bottom:1px solid var(--bd);border-right:0.5px solid rgba(201,168,76,0.08);
+}
+thead th:first-child{text-align:left;padding-left:14px;width:36%;}
+thead th:last-child{border-right:none;color:var(--gold);}
+
+tbody tr{border-bottom:0.5px solid rgba(201,168,76,0.06);transition:background .15s;}
+tbody tr:hover{background:rgba(201,168,76,0.04);}
+tbody tr.r1{background:var(--r1-bg);}
+tbody tr.r2{background:var(--r2-bg);}
+tbody tr.r3{background:var(--r3-bg);}
+
+tbody td{padding:11px 8px;text-align:center;border-right:0.5px solid rgba(201,168,76,0.06);vertical-align:middle;}
+tbody td:first-child{text-align:left;padding-left:14px;border-right:0.5px solid rgba(201,168,76,0.1);}
+tbody td:last-child{border-right:none;}
+
+.td-name-wrap{display:flex;align-items:center;gap:10px;}
+.pos-medal{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--wh2);min-width:24px;text-align:center;}
+.r1 .pos-medal{color:var(--gold);font-size:20px;}
+.r2 .pos-medal{color:#C0C0C0;}
+.r3 .pos-medal{color:#CD7F32;}
+.team-info{}
+.tname{font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--wh);line-height:1;}
 .r1 .tname{color:var(--gold-light);}
-.tsrc{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--wh2);opacity:.55;}
-.barmini{height:2px;background:rgba(255,255,255,0.07);border-radius:1px;margin-top:3px;overflow:hidden;}
+.tsrc{font-size:9px;letter-spacing:1px;color:var(--wh2);opacity:.5;font-weight:400;}
+.barmini{height:2px;background:rgba(255,255,255,0.06);border-radius:1px;margin-top:4px;overflow:hidden;min-width:60px;}
 .barfill{height:100%;border-radius:1px;background:var(--gold);transition:width .6s ease;}
 .r2 .barfill{background:#C0C0C0;}.r3 .barfill{background:#CD7F32;}
-.cell{text-align:center;font-size:14px;font-weight:600;color:var(--wh2);}
-.cell.tot{font-family:'Playfair Display',serif;font-size:18px;color:var(--wh);}
-.r1 .cell.tot{color:var(--gold);}
-.mpct{font-size:9px;color:var(--gold-dark);display:block;font-weight:300;}
-.tot-row{display:grid;grid-template-columns:32px 1fr 48px 52px;gap:0;padding:11px 12px;border-top:1px solid var(--bd);background:var(--bk2);}
-.tot-lbl{grid-column:1/3;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;align-self:center;}
-.tot-num{text-align:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold);}
+
+.cell-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--wh2);}
+.cell-val.tot{font-size:24px;color:var(--wh);}
+.r1 .cell-val.tot{color:var(--gold);}
+.mpct{font-size:9px;color:var(--gold-dark);display:block;font-weight:500;line-height:1;margin-top:1px;}
+
+/* total row */
+tfoot tr{background:var(--bk2);}
+tfoot td{
+  padding:11px 8px;text-align:center;
+  border-top:1px solid var(--bd);border-right:0.5px solid rgba(201,168,76,0.08);
+  font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);
+}
+tfoot td:first-child{text-align:left;padding-left:14px;font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--gold);vertical-align:middle;}
+tfoot td:last-child{font-size:24px;border-right:none;}
+
+/* ── LOG BOX ────────────────────────────── */
+.log-box{margin:8px 12px;background:#090909;border:0.5px solid var(--bd);border-radius:8px;padding:7px 12px;font-size:11px;color:var(--green);line-height:1.8;font-family:monospace;max-height:60px;overflow-y:auto;}
+
+/* ── MANUAL PANEL ───────────────────────── */
 .cfg{padding:1rem;}
 .fb-card{background:var(--bk2);border:0.5px solid var(--bd);border-radius:10px;padding:1rem;margin-bottom:10px;}
-.fb-head{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.m-input{padding:5px 8px;font-size:14px;border-radius:5px;border:0.5px solid var(--bd);background:#1A1A1A;color:var(--wh);text-align:center;font-family:'Barlow Condensed',sans-serif;width:100%;}
-.col-hdr{font-size:10px;color:var(--wh2);text-align:center;}
-.btn-gold{width:100%;margin-top:10px;padding:10px;font-size:13px;letter-spacing:2px;text-transform:uppercase;border-radius:6px;border:none;background:var(--gold);color:#0A0A0A;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;}
-.log-box{margin:8px 12px;background:#0A0A0A;border:0.5px solid var(--bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#5DCAA5;line-height:1.8;font-family:monospace;max-height:70px;overflow-y:auto;word-break:break-all;}
+.fb-head{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:700;}
+.col-hdr{font-size:10px;color:var(--wh2);text-align:center;letter-spacing:1px;}
+.m-input{padding:6px 8px;font-size:15px;border-radius:5px;border:0.5px solid var(--bd);background:#1A1A1A;color:var(--wh);text-align:center;font-family:'Rajdhani',sans-serif;font-weight:600;width:100%;}
+.btn-gold{width:100%;margin-top:10px;padding:11px;font-size:13px;letter-spacing:3px;text-transform:uppercase;border-radius:6px;border:none;background:var(--gold);color:#0A0A0A;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;}
+.btn-gold:hover{background:var(--gold-light);}
+
+/* ── SCROLLBAR ──────────────────────────── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bk);}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
 </style>
+</head>
+<body>
 
-<div class="root">
-  <div class="hdr">
-    <div class="logo">GR Consórcio</div>
-    <div class="logo-sub">Ranking de Equipes</div>
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="live-badge"><span class="live-dot"></span>Ao vivo</div>
+    <div class="conn-status">
+      <span class="cs"><span class="cs-dot wait" id="dotChis"></span>Chis</span>
+      <span class="cs"><span class="cs-dot wait" id="dotDanylo"></span>Danylo</span>
+    </div>
+  </div>
+  <div>
+    <div class="hdr-title">GR Consórcio</div>
+    <div class="hdr-sub">Ranking de Equipes</div>
+  </div>
+  <div class="hdr-right">
     <div class="month-badge" id="monthBadge">—</div>
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="goTab('ranking')">Ranking</button>
-    <button class="nav-tab" onclick="goTab('manual')">Select & Extra</button>
-  </div>
-
-  <div class="panel active" id="panel-ranking">
-    <div class="stats-grid">
-      <div class="stat"><div class="stat-lbl">Total cotas</div><div class="stat-val" id="totCotas">—</div></div>
-      <div class="stat"><div class="stat-lbl">Vendas dia</div><div class="stat-val" id="vendasDia">—</div></div>
-    </div>
-    <div class="meta-bar-wrap">
-      <div class="meta-info"><span>Meta: <span id="metaVal">—</span></span><span id="metaPct">—</span></div>
-      <div class="meta-bar-bg"><div class="meta-bar-fg" id="metaFg" style="width:0%"></div></div>
-    </div>
-    <div class="live-row">
-      <div class="conn-status">
-        <span class="cs"><span class="cs-dot wait" id="dotChis"></span>Chis</span>
-        <span class="cs"><span class="cs-dot wait" id="dotDanylo"></span>Danylo</span>
-      </div>
-      <span class="live-badge"><span class="live-dot"></span>ao vivo</span>
-    </div>
-    <div class="week-tabs-rnk" id="weekTabs"></div>
-    <div class="tbl-head">
-      <div class="th">#</div><div class="th">Equipe</div><div class="th">Sem.</div><div class="th">Total</div>
-    </div>
-    <div id="rankRows"></div>
-    <div class="tot-row">
-      <div class="tot-lbl">Total geral</div><div></div>
-      <div class="tot-num" id="totSem">—</div>
-      <div class="tot-num" id="totGeral">—</div>
-    </div>
-    <div class="log-box" id="logBox">Aguardando Firebase...</div>
-  </div>
-
-  <div class="panel" id="panel-manual">
-    <div class="cfg">
-      <div class="fb-card">
-        <div class="fb-head">Equipe Select</div>
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
-          <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
-          <div style="font-size:13px;color:var(--gold);align-self:center;">Select</div>
-          <input class="m-input" id="sel-s0" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s1" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s2" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s3" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s4" type="number" min="0" value="0" oninput="updateManual()"/>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-          <span style="font-size:11px;color:var(--wh2);">Meta</span>
-          <input class="m-input" id="sel-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
-        </div>
-      </div>
-      <div class="fb-card">
-        <div class="fb-head">Equipe Extra</div>
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
-          <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
-          <div style="font-size:13px;color:var(--gold);align-self:center;">Extra</div>
-          <input class="m-input" id="ext-s0" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s1" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s2" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s3" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s4" type="number" min="0" value="0" oninput="updateManual()"/>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-          <span style="font-size:11px;color:var(--wh2);">Meta</span>
-          <input class="m-input" id="ext-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
-        </div>
-      </div>
-      <button class="btn-gold" onclick="goTab('ranking')">Ver ranking</button>
-    </div>
   </div>
 </div>
 
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="goTab('ranking')">Ranking</button>
+  <button class="nav-tab" onclick="goTab('manual')">Select &amp; Extra</button>
+</div>
+
+<!-- RANKING PANEL -->
+<div class="panel active" id="panel-ranking">
+  <div class="main-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <div class="sb-block">
+        <div class="sb-lbl">GR Consórcio</div>
+        <div style="font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-top:2px;" id="monthBadge2">—</div>
+      </div>
+
+      <div class="sb-block">
+        <div class="sb-lbl">Vendas<br>do dia</div>
+        <div class="sb-val" id="vendasDia">0</div>
+      </div>
+
+      <div class="sb-block">
+        <div class="sb-lbl">Vendas<br>no mês</div>
+        <div class="sb-val" id="totCotas">0</div>
+        <div class="sb-meta-txt" id="metaTxt">—</div>
+        <div class="meta-bar-bg"><div class="meta-bar-fg" id="metaFg" style="width:0%"></div></div>
+      </div>
+
+      <div class="sb-block">
+        <div class="sb-lbl">Taxa de<br>conversão</div>
+        <div class="sb-val gold" style="font-size:36px;" id="metaPct">—</div>
+      </div>
+
+      <div class="sb-block" style="flex:0;padding:.75rem .85rem;">
+        <div class="sb-lbl" style="margin-bottom:6px;">Conexões</div>
+        <div class="sb-conn">
+          <span class="cs"><span class="cs-dot wait" id="dotChis"></span>Chis</span>
+          <span class="cs"><span class="cs-dot wait" id="dotDanylo"></span>Danylo</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-area">
+      <!-- WEEK TABS -->
+      <div class="week-tabs" id="weekTabs"></div>
+
+      <!-- TABLE -->
+      <div class="tbl-wrap" style="flex:1;overflow:auto;">
+        <table>
+          <thead>
+            <tr id="tblHead">
+              <th>Equipe</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="rankRows"></tbody>
+          <tfoot>
+            <tr id="totRow">
+              <td>Total geral</td>
+              <td id="totGeral">—</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="log-box" id="logBox">Aguardando Firebase...</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MANUAL PANEL -->
+<div class="panel" id="panel-manual">
+  <div class="cfg">
+    <div class="fb-card">
+      <div class="fb-head">Equipe Select</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
+        <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
+        <div style="font-size:13px;color:var(--gold);align-self:center;font-weight:700;">Select</div>
+        <input class="m-input" id="sel-s0" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="sel-s1" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="sel-s2" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="sel-s3" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="sel-s4" type="number" min="0" value="0" oninput="updateManual()"/>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:var(--wh2);letter-spacing:2px;text-transform:uppercase;">Meta</span>
+        <input class="m-input" id="sel-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
+      </div>
+    </div>
+    <div class="fb-card">
+      <div class="fb-head">Equipe Extra</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
+        <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
+        <div style="font-size:13px;color:var(--gold);align-self:center;font-weight:700;">Extra</div>
+        <input class="m-input" id="ext-s0" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="ext-s1" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="ext-s2" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="ext-s3" type="number" min="0" value="0" oninput="updateManual()"/>
+        <input class="m-input" id="ext-s4" type="number" min="0" value="0" oninput="updateManual()"/>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:var(--wh2);letter-spacing:2px;text-transform:uppercase;">Meta</span>
+        <input class="m-input" id="ext-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
+      </div>
+    </div>
+    <button class="btn-gold" onclick="goTab('ranking')">Ver ranking</button>
+  </div>
+</div>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
@@ -193,18 +341,40 @@ function somarSemanas(dados){
   });
   return tot;
 }
+function medalIcon(i){
+  if(i===0) return '🥇';
+  if(i===1) return '🥈';
+  if(i===2) return '🥉';
+  return (i+1);
+}
+
 function render(){
   const maxW=Math.max(...teams.map(t=>(t.semanas||[]).length),2);
+
+  // week tabs
   const wt=document.getElementById('weekTabs');
   wt.innerHTML='';
   const mk=(lbl,val)=>{const b=document.createElement('button');b.className='wtab'+(selWeek===val?' active':'');b.textContent=lbl;b.onclick=()=>{selWeek=val;render();};wt.appendChild(b);};
   mk('Total','total');
-  for(let i=0;i<maxW;i++)mk('Sem.'+(i+1),String(i));
+  for(let i=0;i<maxW;i++) mk('Sem.'+(i+1),String(i));
 
+  // table header
+  const thead=document.getElementById('tblHead');
+  thead.innerHTML='<th style="text-align:left;padding-left:14px;">Equipe</th>';
+  for(let i=0;i<maxW;i++){
+    const th=document.createElement('th');
+    th.textContent='S'+(i+1);
+    thead.appendChild(th);
+  }
+  const thTot=document.createElement('th');
+  thTot.textContent='TOTAL';
+  thTot.style.color='var(--gold)';
+  thead.appendChild(thTot);
+
+  // sort
   const sorted=[...teams].sort((a,b)=>getVal(b,selWeek)-getVal(a,selWeek));
   const maxV=Math.max(...sorted.map(t=>getVal(t,selWeek)),1);
   const grand=teams.reduce((s,t)=>s+getTotal(t),0);
-  const semTot=sorted.reduce((s,t)=>s+getVal(t,selWeek),0);
   const metaTot=teams.reduce((s,t)=>s+(t.meta||0),0);
   const pct=metaTot>0?Math.min(Math.round(grand/metaTot*100),100):0;
 
@@ -214,8 +384,8 @@ function render(){
   document.getElementById('metaPct').textContent=pct+'%';
   document.getElementById('metaFg').style.width=pct+'%';
   document.getElementById('totGeral').textContent=grand;
-  document.getElementById('totSem').textContent=semTot;
 
+  // rows
   const rows=document.getElementById('rankRows');
   rows.innerHTML='';
   sorted.forEach((t,i)=>{
@@ -224,17 +394,48 @@ function render(){
     const bp=Math.round(v/maxV*100);
     const mp=t.meta>0?Math.round(totReal/t.meta*100):null;
     const cls=i===0?'r1':i===1?'r2':i===2?'r3':'';
-    const medal=i===0?'①':i===1?'②':i===2?'③':(i+1);
-    const row=document.createElement('div');
-    row.className='row '+cls;
-    row.innerHTML=`<div class="pos">${medal}</div>
-      <div><div class="tname">${t.nome}</div>
-      <div class="tsrc">${t.src==='firebase'?'⚡ live':'✎ manual'} · meta ${t.meta}</div>
-      <div class="barmini"><div class="barfill" style="width:${bp}%"></div></div></div>
-      <div class="cell">${v}</div>
-      <div class="cell tot">${totReal}${mp!==null?`<span class="mpct">${mp}%</span>`:''}</div>`;
-    rows.appendChild(row);
+    const tr=document.createElement('tr');
+    tr.className=cls;
+
+    // name cell
+    let nameCell=`<td>
+      <div class="td-name-wrap">
+        <div class="pos-medal">${medalIcon(i)}</div>
+        <div class="team-info">
+          <div class="tname">${t.nome}</div>
+          <div class="tsrc">${t.src==='firebase'?'⚡ live':'✎ manual'} · meta ${t.meta}</div>
+          <div class="barmini"><div class="barfill" style="width:${bp}%"></div></div>
+        </div>
+      </div>
+    </td>`;
+
+    // week cells
+    let weekCells='';
+    for(let w=0;w<maxW;w++){
+      const wv=(t.semanas||[])[w]||0;
+      weekCells+=`<td><span class="cell-val">${wv}</span></td>`;
+    }
+
+    // total cell
+    let totCell=`<td><span class="cell-val tot">${totReal}</span>${mp!==null?`<span class="mpct">${mp}% meta</span>`:''}</td>`;
+
+    tr.innerHTML=nameCell+weekCells+totCell;
+    rows.appendChild(tr);
   });
+
+  // footer totals
+  const totRow=document.getElementById('totRow');
+  totRow.innerHTML='<td>Total geral</td>';
+  for(let w=0;w<maxW;w++){
+    const wSum=teams.reduce((s,t)=>s+((t.semanas||[])[w]||0),0);
+    const td=document.createElement('td');
+    td.textContent=wSum;
+    totRow.appendChild(td);
+  }
+  const tdG=document.createElement('td');
+  tdG.id='totGeral';
+  tdG.textContent=grand;
+  totRow.appendChild(tdG);
 }
 
 window.addEventListener('load',function(){
@@ -267,7 +468,7 @@ window.addEventListener('load',function(){
       if(c.meta) t.meta=c.meta;
       if(c.cotasFantasma!=null) t.cotasFantasma=Number(c.cotasFantasma)||0;
       if(c.vendas_dia!=null) vendasDia+=Number(c.vendas_dia)||0;
-      log('[Danylo] config cotasFantasma='+t.cotasFantasma);
+      log('[Danylo] config');
       render();
     });
     dbD.ref('equipe_danylo/dados').on('value',s=>{
@@ -285,3 +486,5 @@ window.addEventListener('load',function(){
 });
 render();
 </script>
+</body>
+</html>
