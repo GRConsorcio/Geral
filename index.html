@@ -197,7 +197,6 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
           <div class="live-dot"></div>
           <div class="live-lbl">ao vivo</div>
           <div class="cs"><span class="cs-dot wait" id="dotChis"></span>Chis</div>
-          <div class="cs"><span class="cs-dot wait" id="dotDanylo"></span>Dnyl</div>
         </div>
       </div>
 
@@ -269,8 +268,7 @@ let vendasDia=0;
 let dbManual=null, saveTimer=null;
 
 let teams=[
-  {nome:'Chis',   semanas:[], cotasFantasma:0, meta:70,  src:'firebase'},
-  {nome:'Danylo', semanas:[], cotasFantasma:0, meta:100, src:'firebase'},
+  {nome:'Chis',   semanas:[], cotasFantasma:0, meta:100, src:'firebase'},
   {nome:'Select', semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
   {nome:'Extra',  semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
 ];
@@ -437,12 +435,10 @@ function render(){
 
 window.addEventListener('load',function(){
   try{
-    const appC=firebase.initializeApp(CFG_CHIS,'chis');
     const appD=firebase.initializeApp(CFG_DANYLO,'danylo');
-    const dbC=firebase.database(appC);
     const dbD=firebase.database(appD);
 
-    dbC.ref('equipe_chis/config').on('value',s=>{
+    dbD.ref('equipe_danylo/config').on('value',s=>{
       const c=s.val()||{};
       const t=teams.find(x=>x.nome==='Chis');
       if(c.meta) t.meta=c.meta;
@@ -450,30 +446,15 @@ window.addEventListener('load',function(){
       if(c.vendas_dia!=null) vendasDia=c.vendas_dia;
       render();
     });
-    dbC.ref('equipe_chis/dados').on('value',s=>{
-      const t=teams.find(x=>x.nome==='Chis');
-      t.semanas=somarSemanas(s.val()||{});
-      document.getElementById('dotChis').className='cs-dot ok';
-      render();
-    },e=>{document.getElementById('dotChis').className='cs-dot err';});
-
-    dbD.ref('equipe_danylo/config').on('value',s=>{
-      const c=s.val()||{};
-      const t=teams.find(x=>x.nome==='Danylo');
-      if(c.meta) t.meta=c.meta;
-      if(c.cotasFantasma!=null) t.cotasFantasma=Number(c.cotasFantasma)||0;
-      if(c.vendas_dia!=null) vendasDia+=Number(c.vendas_dia)||0;
-      render();
-    });
     dbD.ref('equipe_danylo/dados').on('value',s=>{
-      const t=teams.find(x=>x.nome==='Danylo');
+      const t=teams.find(x=>x.nome==='Chis');
       const dados=s.val()||{};
       const vends={};
       Object.entries(dados).forEach(([k,v])=>{if(v&&v.s!=null)vends[k]=v;});
       t.semanas=somarSemanas(vends);
-      document.getElementById('dotDanylo').className='cs-dot ok';
+      document.getElementById('dotChis').className='cs-dot ok';
       render();
-    },e=>{document.getElementById('dotDanylo').className='cs-dot err';});
+    },e=>{document.getElementById('dotChis').className='cs-dot err';});
 
     dbManual=dbD;
     dbD.ref('equipes_manuais').on('value',s=>{
