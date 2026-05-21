@@ -215,6 +215,7 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
           <div class="live-dot"></div>
           <div class="live-lbl">ao vivo</div>
           <div class="cs"><span class="cs-dot wait" id="dotChis"></span>Chis</div>
+          <div class="cs"><span class="cs-dot wait" id="dotLuiz"></span>Luiz</div>
         </div>
       </div>
 
@@ -296,6 +297,7 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
 <script>
 const CFG_CHIS={apiKey:"AIzaSyAStKygESgvDlcqL8AcPd2K6cQLDS4IpuQ",authDomain:"ranking-chis.firebaseapp.com",databaseURL:"https://ranking-chis-default-rtdb.firebaseio.com",projectId:"ranking-chis",appId:"1:817538775589:web:23e5710cad96ef674a1dcc"};
 const CFG_DANYLO={apiKey:"AIzaSyCX7ocMbAK95WIKlTR-qSUojxEhDwb1mCo",authDomain:"homegr-71157.firebaseapp.com",databaseURL:"https://homegr-71157-default-rtdb.firebaseio.com",projectId:"homegr-71157",appId:"1:353566889780:web:aa363de0a0c3986a243761"};
+const CFG_LUIZ={apiKey:"AIzaSyDV6UD6NqSkfDhFvtSSWsKWLeSSVy5z5Cg",authDomain:"luiz-6a2ba.firebaseapp.com",databaseURL:"https://luiz-6a2ba-default-rtdb.firebaseio.com",projectId:"luiz-6a2ba",storageBucket:"luiz-6a2ba.firebasestorage.app"};
 
 let selWeek=null; // null = nenhuma semana expandida (mostra só total)
 let vendasDia=0;
@@ -373,6 +375,7 @@ let teams=[
   {nome:'Chis',   semanas:[], cotasFantasma:0, meta:100, src:'firebase'},
   {nome:'Select', semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
   {nome:'Extra',  semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
+  {nome:'Luiz',   semanas:[], cotasFantasma:0, meta:160, src:'firebase_luiz'},
 ];
 
 const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -582,6 +585,45 @@ window.addEventListener('load',function(){
     },e=>{console.error('[Manual]',e.message);});
 
   }catch(e){console.error('ERRO:',e.message);}
+
+  // ═══ LUIZ: lê todas as equipes em tempo real ═══
+  try{
+    const appL=firebase.initializeApp(CFG_LUIZ,'luiz');
+    const dbL=firebase.database(appL);
+    const tL=teams.find(x=>x.nome==='Luiz');
+
+    // 1. Lê a lista de equipes (gr_equipes) — quando mudar, reassina os dados de cada uma
+    dbL.ref('gr_equipes').on('value',snapEquipes=>{
+      const listaEquipes=snapEquipes.val()||{};
+      // Para cada equipe registrada, escuta os dados e config em tempo real
+      Object.keys(listaEquipes).forEach(eqKey=>{
+        // Config: meta e vendas_dia
+        dbL.ref(`${eqKey}/config`).on('value',snapCfg=>{
+          const c=snapCfg.val()||{};
+          if(c.meta) tL.meta=Number(c.meta);
+          if(c.cotasFantasma!=null) tL.cotasFantasma=Number(c.cotasFantasma)||0;
+          render();
+        });
+        // Dados: vendedores com semanas
+        dbL.ref(`${eqKey}/dados`).on('value',snapDados=>{
+          // Reasume todas as equipes do Luiz zeradas e resoma
+          const dadosEquipe=snapDados.val()||{};
+          const vends={};
+          Object.entries(dadosEquipe).forEach(([k,v])=>{
+            if(v&&v.s!=null) vends[`${eqKey}_${k}`]=v;
+          });
+          // Guarda por equipe para somar corretamente depois
+          if(!tL._eqDados) tL._eqDados={};
+          tL._eqDados[eqKey]=vends;
+          // Soma todas as equipes
+          const todosVends=Object.assign({},...Object.values(tL._eqDados));
+          tL.semanas=somarSemanas(todosVends);
+          document.getElementById('dotLuiz').className='cs-dot ok';
+          render();
+        },()=>{document.getElementById('dotLuiz').className='cs-dot err';});
+      });
+    },()=>{document.getElementById('dotLuiz').className='cs-dot err';});
+  }catch(e){console.error('ERRO Luiz:',e.message);}
 });
 render();
 </script>
