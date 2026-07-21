@@ -1,12 +1,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Oswald:wght@500;600;700&display=swap');
 :root{
-  --gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;
-  --bk:#0A0A0A;--bk2:#111111;--bk3:#1A1A1A;
-  --wh:#F5F0E8;--wh2:#DDD8CC;--bd:rgba(201,168,76,0.25);
-  --col-sem:rgba(201,168,76,0.13);
-  --col-tot:rgba(201,168,76,0.22);
+  --gold:#C9A84C;--gold-light:#E8C97A;--gold-dark:#8B6914;--gold-hot:#D9B65E;
+  --bk:#060B12;--bk2:#0A1420;--bk3:#071019;
+  --wh:#F5F0E8;--wh2:#F5F0E8;--bd:rgba(201,168,76,0.25);
+  --col-sem:rgba(10,20,32,0.45);
+  --col-tot:rgba(10,20,32,0.65);
+  --num-font:'Oswald',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bk);overflow:hidden;}
@@ -17,12 +18,12 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
 .hdr::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:180px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .logo-img{height:48px;width:auto;object-fit:contain;display:block;margin:0 auto 2px;}
 .logo-sub{font-size:8px;letter-spacing:5px;color:var(--wh2);text-transform:uppercase;font-weight:300;}
-.month-badge{display:inline-block;margin-top:4px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:0.5px solid var(--bd);padding:2px 10px;border-radius:20px;}
+.month-badge{display:inline-block;margin-top:4px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--wh);border:0.5px solid var(--bd);padding:2px 10px;border-radius:20px;}
 
 /* NAV */
 .nav-tabs{display:flex;background:var(--bk2);border-bottom:0.5px solid var(--bd);flex-shrink:0;}
 .nav-tab{flex:1;padding:8px 4px;font-size:9px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wh2);cursor:pointer;border:none;background:none;font-family:'Montserrat',sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
-.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
+.nav-tab.active{color:var(--wh);border-bottom-color:var(--gold);background:rgba(201,168,76,0.06);}
 .panel{display:none;}.panel.active{display:flex;flex-direction:column;flex:1;min-height:0;}
 
 /* MAIN LAYOUT */
@@ -33,11 +34,11 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
 .metric-card{width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;border-bottom:0.5px solid var(--bd);text-align:center;}
 .metric-card:last-child{border-bottom:none;}
 .metric-lbl{font-size:6px;letter-spacing:1px;text-transform:uppercase;color:var(--wh2);font-weight:400;line-height:1.4;margin-bottom:3px;}
-.metric-val{font-size:20px;font-weight:700;color:var(--gold);line-height:1;}
+.metric-val{font-family:var(--num-font);font-size:22px;font-weight:600;color:var(--wh);line-height:1;letter-spacing:.5px;}
 .metric-val.small{font-size:14px;}
 .meta-bar-bg{width:calc(100% - 12px);height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;margin-top:4px;}
 .meta-bar-fg{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width .8s ease;}
-.meta-pct-lbl{font-size:7px;color:var(--gold);margin-top:2px;letter-spacing:1px;font-weight:600;}
+.meta-pct-lbl{font-size:7px;color:var(--wh);margin-top:2px;letter-spacing:1px;font-weight:600;}
 .sidebar-div{width:40px;height:0.5px;background:var(--bd);}
 .conn-col{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite;}
@@ -55,52 +56,52 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
 
 /* HEADER DA TABELA */
 .tbl-head-row{display:grid;flex-shrink:0;border-bottom:1px solid var(--bd);background:var(--bk2);}
-.th-pos{background:var(--bk2);display:flex;align-items:center;justify-content:center;padding:6px 2px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);font-weight:700;}
-.th-name{background:var(--bk2);display:flex;align-items:center;padding:6px 8px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);font-weight:700;}
-.th-sem{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;background:var(--col-sem);border-left:1px solid var(--bd);cursor:pointer;user-select:none;transition:background .2s;}
+.th-pos{background:var(--bk2);display:flex;align-items:center;justify-content:center;padding:6px 2px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--wh);font-weight:700;}
+.th-name{background:var(--bk2);display:flex;align-items:center;padding:6px 8px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--wh);font-weight:700;}
+.th-sem{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--wh);font-weight:700;background:var(--col-sem);border-left:1px solid var(--bd);cursor:pointer;user-select:none;transition:background .2s;}
 .th-sem:hover{background:rgba(201,168,76,0.25);}
-.th-sem.active-col{background:rgba(201,168,76,0.30);color:var(--gold-light);}
-.th-tot{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;background:var(--col-tot);border-left:2px solid var(--gold-dark);}
+.th-sem.active-col{background:rgba(201,168,76,0.30);color:var(--wh);}
+.th-tot{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--wh);font-weight:700;background:var(--col-tot);border-left:2px solid var(--gold-dark);}
 
 /* LINHAS */
 .tbl-body{flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .tbl-row{display:grid;flex:1;min-height:0;border-bottom:0.5px solid rgba(201,168,76,0.08);align-items:stretch;}
-.tbl-row.r1{background:rgba(201,168,76,0.08);}
-.tbl-row.r2{background:rgba(180,180,180,0.03);}
-.tbl-row.r3{background:rgba(180,100,50,0.03);}
+.tbl-row.r1{background:rgba(201,168,76,0.08);border-left:2px solid var(--gold-hot);}
+.tbl-row.r2{background:rgba(180,180,180,0.03);border-left:2px solid transparent;}
+.tbl-row.r3{background:rgba(180,100,50,0.03);border-left:2px solid transparent;}
 .tbl-row:last-child{border-bottom:none;}
 
-.cell-pos{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--wh2);}
-.r1 .cell-pos{color:var(--gold);font-size:15px;}
+.cell-pos{font-family:var(--num-font);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--wh2);}
+.r1 .cell-pos{color:var(--wh);font-size:17px;}
 .r2 .cell-pos{color:#C0C0C0;}
 .r3 .cell-pos{color:#CD7F32;}
 
 .cell-name{display:flex;flex-direction:column;justify-content:center;padding:4px 6px;overflow:hidden;}
 .tname{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--wh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.r1 .tname{color:var(--gold-light);}
+.r1 .tname{color:var(--wh);}
 .tmeta{font-size:7px;color:var(--wh2);opacity:.5;letter-spacing:.5px;margin-top:1px;}
 .barmini{height:2px;background:rgba(255,255,255,0.07);border-radius:1px;margin-top:2px;overflow:hidden;}
 .barfill{height:100%;border-radius:1px;background:var(--gold);transition:width .5s ease;}
 .r2 .barfill{background:#C0C0C0;}.r3 .barfill{background:#CD7F32;}
 
-.cell-sem{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--col-sem);border-left:1px solid var(--bd);font-size:15px;font-weight:700;color:var(--wh2);transition:background .2s;}
+.cell-sem{font-family:var(--num-font);display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--col-sem);border-left:1px solid var(--bd);font-size:16px;font-weight:600;color:var(--wh2);transition:background .2s;}
 .cell-sem.active-col{background:rgba(201,168,76,0.28);color:var(--wh);}
-.cell-sem .acum{font-size:7px;color:var(--gold-dark);font-weight:400;margin-top:1px;letter-spacing:.5px;}
+.cell-sem .acum{font-size:7px;color:var(--wh);opacity:.6;font-weight:400;margin-top:1px;letter-spacing:.5px;}
 
-.cell-tot{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--col-tot);border-left:2px solid var(--gold-dark);font-size:18px;font-weight:900;color:var(--gold);}
-.cell-tot .pct{font-size:7px;color:var(--gold-dark);font-weight:400;margin-top:1px;}
+.cell-tot{font-family:var(--num-font);display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--col-tot);border-left:2px solid var(--gold-dark);font-size:19px;font-weight:700;color:var(--wh);}
+.cell-tot .pct{font-size:7px;color:var(--wh);opacity:.6;font-weight:400;margin-top:1px;}
 
 /* TOTAL ROW */
 .tbl-total{display:grid;flex-shrink:0;border-top:1px solid var(--bd);background:var(--bk2);}
-.tot-label{display:flex;align-items:center;padding:6px 8px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;}
-.tot-sem-val{display:flex;align-items:center;justify-content:center;background:var(--col-sem);border-left:1px solid var(--bd);font-size:14px;font-weight:700;color:var(--wh);}
-.tot-tot-val{display:flex;align-items:center;justify-content:center;background:var(--col-tot);border-left:2px solid var(--gold-dark);font-size:16px;font-weight:900;color:var(--gold);}
+.tot-label{display:flex;align-items:center;padding:6px 8px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--wh);font-weight:700;}
+.tot-sem-val{font-family:var(--num-font);display:flex;align-items:center;justify-content:center;background:var(--col-sem);border-left:1px solid var(--bd);font-size:15px;font-weight:600;color:var(--wh);}
+.tot-tot-val{font-family:var(--num-font);display:flex;align-items:center;justify-content:center;background:var(--col-tot);border-left:2px solid var(--gold-dark);font-size:17px;font-weight:700;color:var(--wh);}
 
 /* CONFIG PANEL */
 .cfg{padding:1rem;overflow-y:auto;}
 .fb-card{background:var(--bk2);border:0.5px solid var(--bd);border-radius:10px;padding:1rem;margin-bottom:10px;}
-.fb-head{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.m-input{padding:5px 8px;font-size:14px;border-radius:5px;border:0.5px solid var(--bd);background:#1A1A1A;color:var(--wh);text-align:center;font-family:'Montserrat',sans-serif;width:100%;}
+.fb-head{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--wh);margin-bottom:8px;}
+.m-input{padding:5px 8px;font-size:14px;border-radius:5px;border:0.5px solid var(--bd);background:var(--bk3);color:var(--wh);text-align:center;font-family:'Montserrat',sans-serif;width:100%;}
 .col-hdr{font-size:10px;color:var(--wh2);text-align:center;}
 .btn-gold{width:100%;margin-top:10px;padding:10px;font-size:13px;letter-spacing:2px;text-transform:uppercase;border-radius:6px;border:none;background:var(--gold);color:#0A0A0A;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:700;}
 .save-status{text-align:center;font-size:10px;color:#5DCAA5;margin-top:6px;min-height:16px;letter-spacing:1px;}
@@ -109,8 +110,8 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal-box{background:var(--bk2);border:1px solid var(--bd);border-radius:12px;padding:1.2rem;width:280px;max-width:90vw;}
-.modal-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
-.modal-input{width:100%;padding:8px 10px;font-size:14px;border-radius:6px;border:0.5px solid var(--bd);background:#111;color:var(--wh);font-family:'Montserrat',sans-serif;margin-bottom:10px;}
+.modal-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--wh);margin-bottom:10px;}
+.modal-input{width:100%;padding:8px 10px;font-size:14px;border-radius:6px;border:0.5px solid var(--bd);background:var(--bk3);color:var(--wh);font-family:'Montserrat',sans-serif;margin-bottom:10px;}
 .modal-row{display:flex;gap:8px;}
 .btn-sm{flex:1;padding:7px;font-size:11px;letter-spacing:1px;text-transform:uppercase;border-radius:5px;border:none;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:700;}
 .btn-cancel{background:var(--bk3);color:var(--wh2);}
@@ -119,9 +120,9 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
 /* WEEK COUNT CONTROL */
 .week-ctrl{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--bk2);border-top:0.5px solid var(--bd);flex-shrink:0;}
 .week-ctrl-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--wh2);flex:1;}
-.week-btn{width:22px;height:22px;border-radius:50%;border:0.5px solid var(--bd);background:var(--bk3);color:var(--gold);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;line-height:1;}
+.week-btn{width:22px;height:22px;border-radius:50%;border:0.5px solid var(--bd);background:var(--bk3);color:var(--wh);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;line-height:1;}
 .week-btn:hover{background:rgba(201,168,76,0.2);}
-.week-num{font-size:14px;font-weight:700;color:var(--gold);min-width:18px;text-align:center;}
+.week-num{font-size:14px;font-weight:700;color:var(--wh);min-width:18px;text-align:center;}
 
 /* RESPONSIVO CELULAR */
 @media(max-width:480px){
@@ -187,7 +188,7 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
   </div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="goTab('ranking')">Ranking</button>
-    <button class="nav-tab" onclick="goTab('manual')">Select & Extra</button>
+    <button class="nav-tab" onclick="goTab('manual')">Outros</button>
   </div>
 
   <!-- RANKING -->
@@ -241,42 +242,8 @@ html,body{height:100%;background:var(--bk);overflow:hidden;}
   <!-- MANUAL -->
   <div class="panel" id="panel-manual">
     <div class="cfg">
-      <div class="fb-card">
-        <div class="fb-head">Equipe Select</div>
-        <div id="sel-hdr" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
-          <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
-        </div>
-        <div id="sel-row" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
-          <div style="font-size:12px;color:var(--gold);align-self:center;">Select</div>
-          <input class="m-input" id="sel-s0" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s1" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s2" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s3" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="sel-s4" type="number" min="0" value="0" oninput="updateManual()"/>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-          <span style="font-size:11px;color:var(--wh2);">Meta</span>
-          <input class="m-input" id="sel-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
-        </div>
-      </div>
-      <div class="fb-card">
-        <div class="fb-head">Equipe Extra</div>
-        <div id="ext-hdr" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
-          <div></div><div class="col-hdr">S1</div><div class="col-hdr">S2</div><div class="col-hdr">S3</div><div class="col-hdr">S4</div><div class="col-hdr">S5</div>
-        </div>
-        <div id="ext-row" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px;">
-          <div style="font-size:12px;color:var(--gold);align-self:center;">Extra</div>
-          <input class="m-input" id="ext-s0" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s1" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s2" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s3" type="number" min="0" value="0" oninput="updateManual()"/>
-          <input class="m-input" id="ext-s4" type="number" min="0" value="0" oninput="updateManual()"/>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-          <span style="font-size:11px;color:var(--wh2);">Meta</span>
-          <input class="m-input" id="ext-meta" type="number" min="0" value="40" style="width:80px" oninput="updateManual()"/>
-        </div>
-      </div>
+      <div id="manual-teams-container"></div>
+      <button class="btn-gold" style="background:transparent;border:1px dashed var(--bd);color:var(--wh);margin-bottom:10px" onclick="addManualTeam()">+ Adicionar Equipe</button>
       <div class="save-status" id="saveStatus"></div>
       <button class="btn-gold" onclick="goTab('ranking')">Ver ranking</button>
     </div>
@@ -331,50 +298,98 @@ document.getElementById('monthModal').addEventListener('click',function(e){
 function changeWeeks(delta){
   numSemanas=Math.max(1,Math.min(8,numSemanas+delta));
   document.getElementById('weekNum').textContent=numSemanas;
-  // Ajusta array de semanas das equipes manuais
-  ['Select','Extra'].forEach(nome=>{
-    const t=teams.find(x=>x.nome===nome);
-    if(t){
-      while(t.semanas.length<numSemanas) t.semanas.push(0);
-      t.semanas=t.semanas.slice(0,numSemanas);
-    }
+  // Ajusta array de semanas de TODAS as equipes manuais (não só Select/Extra)
+  teams.filter(t=>t.src==='manual').forEach(t=>{
+    while(t.semanas.length<numSemanas) t.semanas.push(0);
+    t.semanas=t.semanas.slice(0,numSemanas);
   });
   // Reconstrói inputs do painel manual
   buildManualInputs();
   render();
 }
 
+// BUGFIX/FEATURE: antes esta função só sabia desenhar exatamente duas equipes
+// fixas ("Select" e "Extra"), hardcoded por id de elemento (sel-s0, ext-s0...).
+// Agora desenha um card por equipe com src==='manual', não importa quantas
+// existam — isso é o que permite adicionar/remover equipes livremente.
 function buildManualInputs(){
-  // Reconstrói os grids de entrada do painel manual com o número atual de semanas
-  ['sel','ext'].forEach(prefix=>{
-    const teamName=prefix==='sel'?'Select':'Extra';
-    const t=teams.find(x=>x.nome===teamName);
-    // Cabeçalho
-    const hdrId=prefix+'-hdr';
-    const rowId=prefix+'-row';
-    const hdrEl=document.getElementById(hdrId);
-    const rowEl=document.getElementById(rowId);
-    if(!hdrEl||!rowEl) return;
-    hdrEl.style.gridTemplateColumns=`repeat(${numSemanas+1},1fr)`;
-    rowEl.style.gridTemplateColumns=`repeat(${numSemanas+1},1fr)`;
-    // Rebuild header cells (skip first empty)
-    hdrEl.innerHTML='<div></div>';
+  const container=document.getElementById('manual-teams-container');
+  if(!container) return;
+  container.innerHTML='';
+  teams.filter(t=>t.src==='manual').forEach(t=>{
+    let hdrCells='<div></div>';
+    for(let i=0;i<numSemanas;i++) hdrCells+=`<div class="col-hdr">S${i+1}</div>`;
+    let rowCells='';
     for(let i=0;i<numSemanas;i++){
-      hdrEl.innerHTML+=`<div class="col-hdr">S${i+1}</div>`;
+      rowCells+=`<input class="m-input" type="number" min="0" value="${t.semanas[i]||0}" oninput="updateManualTeamWeek('${t.id}',${i},this.value)"/>`;
     }
-    // Rebuild row cells
-    rowEl.innerHTML=`<div style="font-size:12px;color:var(--gold);align-self:center;">${teamName}</div>`;
-    for(let i=0;i<numSemanas;i++){
-      rowEl.innerHTML+=`<input class="m-input" id="${prefix}-s${i}" type="number" min="0" value="${t.semanas[i]||0}" oninput="updateManual()"/>`;
-    }
+    const card=document.createElement('div');
+    card.className='fb-card';
+    card.innerHTML=`
+      <div class="fb-head" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <input value="${(t.nome||'').replace(/"/g,'&quot;')}" oninput="renameManualTeam('${t.id}',this.value)"
+          style="background:transparent;border:none;border-bottom:1px dashed var(--bd);color:var(--wh);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:2px 0;flex:1;font-family:'Montserrat',sans-serif"/>
+        <button class="btn-sm" style="width:auto;flex:none;padding:5px 10px;background:transparent;border:1px solid rgba(200,80,80,0.5);color:#e08888" onclick="removeManualTeam('${t.id}')">🗑️ Remover</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(${numSemanas+1},1fr);gap:4px;margin-bottom:4px;">${hdrCells}</div>
+      <div style="display:grid;grid-template-columns:repeat(${numSemanas+1},1fr);gap:4px;margin-bottom:8px;">
+        <div style="font-size:12px;color:var(--wh);align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.nome}</div>
+        ${rowCells}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:var(--wh2);">Meta</span>
+        <input class="m-input" type="number" min="0" value="${t.meta||40}" style="width:80px" oninput="updateManualTeamMeta('${t.id}',this.value)"/>
+      </div>`;
+    container.appendChild(card);
   });
 }
+
+let manualIdCounter=0;
+function genManualId(){ return 'm'+Date.now()+'_'+(manualIdCounter++); }
+
+// FEATURE NOVA: adiciona uma equipe manual — antes era impossível, só existiam
+// Select e Extra fixas no código.
+function addManualTeam(){
+  const qtdAtual=teams.filter(t=>t.src==='manual').length;
+  const t={id:genManualId(), nome:'Nova Equipe '+(qtdAtual+1), semanas:Array(numSemanas).fill(0), cotasFantasma:0, meta:40, src:'manual'};
+  teams.push(t);
+  buildManualInputs();
+  render();
+  scheduleManualSave();
+}
+
+// FEATURE NOVA: remove uma equipe manual pelo id — pede confirmação porque é destrutivo.
+function removeManualTeam(id){
+  if(!confirm('Remover esta equipe? Os dados dela serão apagados.'))return;
+  teams=teams.filter(t=>t.id!==id);
+  buildManualInputs();
+  render();
+  scheduleManualSave();
+}
+
+function renameManualTeam(id,val){
+  const t=teams.find(x=>x.id===id);
+  if(t){ t.nome=val||t.nome; render(); scheduleManualSave(); }
+}
+function updateManualTeamWeek(id,idx,val){
+  const t=teams.find(x=>x.id===id);
+  if(t){ t.semanas[idx]=parseInt(val)||0; render(); scheduleManualSave(); }
+}
+function updateManualTeamMeta(id,val){
+  const t=teams.find(x=>x.id===id);
+  if(t){ t.meta=parseInt(val)||0; render(); scheduleManualSave(); }
+}
+function scheduleManualSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveManualToFirebase,800);
+}
+
 
 
 let teams=[
   {nome:'Chis',   semanas:[], cotasFantasma:0, meta:100, src:'firebase'},
-  {nome:'Select', semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
-  {nome:'Extra',  semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
+  {id:'select_default', nome:'Select', semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
+  {id:'extra_default',  nome:'Extra',  semanas:[0,0,0,0,0], cotasFantasma:0, meta:40, src:'manual'},
   {nome:'Luiz',   semanas:[], cotasFantasma:0, meta:160, src:'firebase_luiz'},
 ];
 
@@ -386,44 +401,16 @@ function goTab(t){
   document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['ranking','manual'][i]===t));
 }
 
-function updateManual(){
-  const sel=teams.find(t=>t.nome==='Select');
-  const ext=teams.find(t=>t.nome==='Extra');
-  for(let i=0;i<numSemanas;i++){
-    const si=document.getElementById('sel-s'+i);
-    const ei=document.getElementById('ext-s'+i);
-    if(si) sel.semanas[i]=parseInt(si.value)||0;
-    if(ei) ext.semanas[i]=parseInt(ei.value)||0;
-  }
-  sel.meta=parseInt(document.getElementById('sel-meta').value)||40;
-  ext.meta=parseInt(document.getElementById('ext-meta').value)||40;
-  render();
-  clearTimeout(saveTimer);
-  saveTimer=setTimeout(saveManualToFirebase, 800);
-}
-
 function saveManualToFirebase(){
   if(!dbManual) return;
-  const sel=teams.find(t=>t.nome==='Select');
-  const ext=teams.find(t=>t.nome==='Extra');
-  dbManual.ref('equipes_manuais').set({
-    select:{semanas:sel.semanas, meta:sel.meta},
-    extra:{semanas:ext.semanas, meta:ext.meta}
-  }).then(()=>{
+  const manualData={};
+  teams.filter(t=>t.src==='manual').forEach(t=>{
+    manualData[t.id]={nome:t.nome, semanas:t.semanas, meta:t.meta};
+  });
+  dbManual.ref('equipes_manuais_v2').set(manualData).then(()=>{
     const s=document.getElementById('saveStatus');
     if(s){s.textContent='Salvo ✓'; setTimeout(()=>s.textContent='',2000);}
   }).catch(e=>console.error(e));
-}
-
-function loadManualInputs(sel,ext){
-  for(let i=0;i<numSemanas;i++){
-    const si=document.getElementById('sel-s'+i);
-    const ei=document.getElementById('ext-s'+i);
-    if(si) si.value=sel.semanas[i]||0;
-    if(ei) ei.value=ext.semanas[i]||0;
-  }
-  document.getElementById('sel-meta').value=sel.meta||40;
-  document.getElementById('ext-meta').value=ext.meta||40;
 }
 
 function getTotal(t){return (t.semanas||[]).reduce((a,b)=>a+(b||0),0)+(t.cotasFantasma||0);}
@@ -455,14 +442,13 @@ function render(){
   const semCols = Array.from({length:maxW},(_,i)=>
     selWeek===i ? '52px' : '28px'
   ).join(' ');
-  const gridCols = `28px 1fr ${semCols} 52px`;
+  const gridCols = `1fr ${semCols} 52px`;
 
   // --- HEADER ---
   const head = document.getElementById('tblHead');
   head.style.gridTemplateColumns = gridCols;
   head.innerHTML = '';
 
-  const thPos = document.createElement('div'); thPos.className='th-pos'; thPos.textContent='#'; head.appendChild(thPos);
   const thName = document.createElement('div'); thName.className='th-name'; thName.textContent='Equipe'; head.appendChild(thName);
 
   for(let i=0;i<maxW;i++){
@@ -481,6 +467,16 @@ function render(){
   const sorted=[...teams].sort((a,b)=>getTotal(b)-getTotal(a));
   const maxV=Math.max(...sorted.map(t=>getTotal(t)),1);
   const body=document.getElementById('tblBody');
+
+  // FLIP (First-Last-Invert-Play): guarda a posição de cada linha ANTES de
+  // redesenhar, pra animar a "ultrapassagem" quando duas equipes trocam de
+  // posição no ranking, em vez da linha simplesmente pular de lugar.
+  // Identifica a linha pelo nome da equipe (chave estável entre renders).
+  const oldRects={};
+  body.querySelectorAll('.tbl-row').forEach(row=>{
+    const key=row.dataset.teamKey;
+    if(key) oldRects[key]=row.getBoundingClientRect();
+  });
   body.innerHTML='';
 
   // Totais por semana
@@ -496,9 +492,8 @@ function render(){
     const row=document.createElement('div');
     row.className='tbl-row '+cls;
     row.style.gridTemplateColumns=gridCols;
+    row.dataset.teamKey=t.nome;
 
-    // pos
-    const cPos=document.createElement('div'); cPos.className='cell-pos'; cPos.textContent=medal; row.appendChild(cPos);
     // name
     const cName=document.createElement('div'); cName.className='cell-name';
     cName.innerHTML=`<div class="tname">${t.nome}</div>
@@ -527,11 +522,39 @@ function render(){
     body.appendChild(row);
   });
 
+  // FLIP — passo "Play": compara a posição antiga (capturada acima) com a
+  // nova e anima a diferença. Sem isso a linha só "pula" pro novo lugar.
+  // Respeita prefers-reduced-motion (usuário que pediu menos movimento).
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){
+    requestAnimationFrame(()=>{
+      body.querySelectorAll('.tbl-row').forEach(row=>{
+        const key=row.dataset.teamKey;
+        const oldRect=oldRects[key];
+        if(!oldRect) return; // equipe nova, sem posição anterior — não anima
+        const newRect=row.getBoundingClientRect();
+        const deltaY=oldRect.top-newRect.top;
+        if(Math.abs(deltaY)<1) return; // não mudou de posição, não precisa animar
+        row.style.transition='none';
+        row.style.transform=`translateY(${deltaY}px)`;
+        row.style.zIndex='5';
+        row.style.position='relative';
+        requestAnimationFrame(()=>{
+          row.style.transition='transform 480ms cubic-bezier(.2,.8,.2,1)';
+          row.style.transform='translateY(0)';
+          row.addEventListener('transitionend',()=>{
+            row.style.transition='';row.style.transform='';row.style.zIndex='';row.style.position='';
+          },{once:true});
+        });
+      });
+    });
+  }
+
   // --- TOTAL ROW ---
   const totRow=document.getElementById('tblTotal');
   totRow.style.gridTemplateColumns=gridCols;
   totRow.innerHTML='';
-  const tl=document.createElement('div'); tl.className='tot-label'; tl.style.gridColumn=`1/3`; tl.textContent='TOTAL'; totRow.appendChild(tl);
+  const tl=document.createElement('div'); tl.className='tot-label'; tl.textContent='TOTAL'; totRow.appendChild(tl);
   for(let s=0;s<maxW;s++){
     const tv=document.createElement('div'); tv.className='tot-sem-val';
     tv.style.borderLeft=(selWeek===s)?'1px solid var(--gold)':'1px solid var(--bd)';
@@ -566,21 +589,34 @@ window.addEventListener('load',function(){
     },e=>{document.getElementById('dotChis').className='cs-dot err';});
 
     dbManual=dbD;
-    dbD.ref('equipes_manuais').on('value',s=>{
+    // Migração única: se o novo formato (equipes_manuais_v2) ainda não existe
+    // mas o antigo (equipes_manuais, com só "select"/"extra") existe, converte.
+    dbD.ref('equipes_manuais_v2').once('value').then(snapV2=>{
+      if(snapV2.exists()) return;
+      return dbD.ref('equipes_manuais').once('value').then(snapOld=>{
+        const old=snapOld.val();
+        if(!old||(!old.select&&!old.extra)) return;
+        const migrated={};
+        if(old.select) migrated[genManualId()]={nome:'Select',semanas:old.select.semanas||[0,0,0,0,0],meta:old.select.meta||40};
+        if(old.extra)  migrated[genManualId()]={nome:'Extra', semanas:old.extra.semanas||[0,0,0,0,0], meta:old.extra.meta||40};
+        return dbD.ref('equipes_manuais_v2').set(migrated);
+      });
+    }).catch(e=>console.warn('[Manual] migração falhou:',e.message));
+
+    dbD.ref('equipes_manuais_v2').on('value',s=>{
       const d=s.val();
-      if(!d) return;
-      const sel=teams.find(x=>x.nome==='Select');
-      const ext=teams.find(x=>x.nome==='Extra');
-      if(d.select){ sel.semanas=d.select.semanas||[0,0,0,0,0]; sel.meta=d.select.meta||40; }
-      if(d.extra){  ext.semanas=d.extra.semanas||[0,0,0,0,0];  ext.meta=d.extra.meta||40;  }
-      // Detecta número de semanas do dado carregado
-      const maxLen=Math.max(sel.semanas.length,ext.semanas.length);
-      if(maxLen>0&&maxLen!==numSemanas){
-        numSemanas=maxLen;
-        document.getElementById('weekNum').textContent=numSemanas;
-        buildManualInputs();
+      if(d && Object.keys(d).length){
+        teams=teams.filter(t=>t.src!=='manual');
+        Object.entries(d).forEach(([id,v])=>{
+          teams.push({id, nome:v.nome||'Equipe', semanas:v.semanas||[], cotasFantasma:0, meta:v.meta||40, src:'manual'});
+        });
+        const maxLen=Math.max(2,...teams.filter(t=>t.src==='manual').map(t=>(t.semanas||[]).length));
+        if(maxLen!==numSemanas){
+          numSemanas=maxLen;
+          document.getElementById('weekNum').textContent=numSemanas;
+        }
       }
-      loadManualInputs(sel,ext);
+      buildManualInputs();
       render();
     },e=>{console.error('[Manual]',e.message);});
 
@@ -625,5 +661,6 @@ window.addEventListener('load',function(){
     },()=>{document.getElementById('dotLuiz').className='cs-dot err';});
   }catch(e){console.error('ERRO Luiz:',e.message);}
 });
+buildManualInputs();
 render();
 </script>
