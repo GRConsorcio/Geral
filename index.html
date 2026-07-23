@@ -263,7 +263,17 @@ let selWeek=null; // null = nenhuma semana expandida (mostra só total)
 // redesenha a tabela (senão o input perderia o foco a cada atualização ao
 // vivo do Chis/Luiz vindo do Firebase) — só quando o campo perde o foco.
 let editing=null;
+// BUGFIX: vendasDia era sobrescrito só pelo config do Chis — o listener do
+// Luiz nunca lia vendas_dia (só meta/cotasFantasma), então a venda do dia do
+// Luiz nunca entrava na conta. Agora soma os dois: Chis (1 valor) + Luiz
+// (pode ter mais de uma equipe em gr_equipes, soma todas).
 let vendasDia=0;
+let vendasDiaChis=0;
+let vendasDiaLuizPorEquipe={};
+function recalcVendasDia(){
+  const luizTotal=Object.values(vendasDiaLuizPorEquipe).reduce((a,b)=>a+(b||0),0);
+  vendasDia=vendasDiaChis+luizTotal;
+}
 let dbManual=null, saveTimer=null;
 let numSemanas=5; // número de semanas configurável
 
@@ -578,7 +588,8 @@ window.addEventListener('load',function(){
       const t=teams.find(x=>x.nome==='Chis');
       if(c.meta) t.meta=c.meta;
       if(c.cotasFantasma!=null) t.cotasFantasma=Number(c.cotasFantasma)||0;
-      if(c.vendas_dia!=null) vendasDia=c.vendas_dia;
+      if(c.vendas_dia!=null) vendasDiaChis=c.vendas_dia;
+      recalcVendasDia();
       render();
     });
     dbD.ref('equipe_danylo/dados').on('value',s=>{
@@ -625,11 +636,13 @@ window.addEventListener('load',function(){
       const listaEquipes=snapEquipes.val()||{};
       // Para cada equipe registrada, escuta os dados e config em tempo real
       Object.keys(listaEquipes).forEach(eqKey=>{
-        // Config: meta e vendas_dia
+        // Config: meta, cotasFantasma e vendas_dia (soma todas as equipes do Luiz)
         dbL.ref(`${eqKey}/config`).on('value',snapCfg=>{
           const c=snapCfg.val()||{};
           if(c.meta) tL.meta=Number(c.meta);
           if(c.cotasFantasma!=null) tL.cotasFantasma=Number(c.cotasFantasma)||0;
+          if(c.vendas_dia!=null) vendasDiaLuizPorEquipe[eqKey]=Number(c.vendas_dia)||0;
+          recalcVendasDia();
           render();
         });
         // Dados: vendedores com semanas
