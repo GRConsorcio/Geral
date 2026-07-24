@@ -274,6 +274,54 @@ function recalcVendasDia(){
   const luizTotal=Object.values(vendasDiaLuizPorEquipe).reduce((a,b)=>a+(b||0),0);
   vendasDia=vendasDiaChis+luizTotal;
 }
+
+// ═══ CÁLCULO PRÓPRIO DE "VENDAS HOJE" (independente do config.vendas_dia) ═══
+// O Geral antes só LIA config.vendas_dia — um campo que nada gravava de volta
+// (os boards individuais do Chis/Luiz calculavam "vendas do dia" só na tela
+// deles, sem persistir). Agora recalcula sozinho a partir de dados+snapDia,
+// igual os boards individuais fazem — o Geral funciona mesmo se nenhuma outra
+// aba estiver aberta.
+function nomeKeyGeral(n){ return (n||'').toString().replace(/[.#$\[\]/]/g,'_'); }
+function dataHojeGeral(){
+  return new Date().toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).split('/').reverse().join('-');
+}
+let snapDiaChisCache={}, cotasDiaChisCache={};
+let snapDiaLuizCache={}, cotasDiaLuizCache={}; // por equipe: {eqKey:{vendorKey:entry}}
+const _snapReconciliandoGeral=new Set();
+
+// Mesma lógica de vendasHojeVendedor() dos boards individuais: compara o total
+// acumulado do mês com o snapshot de meia-noite (snapDia). Cria/corrige o
+// snapshot via transaction se precisar, com guarda de concorrência.
+function vendasHojeGeral(db, prefix, nome, totalAtual, snapCache, cotasCache){
+  const k=nomeKeyGeral(nome), hoje=dataHojeGeral();
+  const entry=snapCache[k];
+  let fromSemanas=0;
+  const reconKey=prefix+'|'+k;
+  const snapRef=db.ref(`${prefix}/snapDia/${k}`);
+  if(!entry){
+    snapCache[k]={data:hoje,base:totalAtual};
+    snapRef.set({data:hoje,base:totalAtual,nome}).catch(()=>{});
+  } else if(entry.data!==hoje){
+    snapCache[k]={data:hoje,base:totalAtual}; // otimista, evita travar a renderização
+    if(!_snapReconciliandoGeral.has(reconKey)){
+      _snapReconciliandoGeral.add(reconKey);
+      snapRef.transaction(current=>{
+        if(current && current.data===hoje) return; // já tem snapshot de hoje — não mexe
+        return {data:hoje,base:totalAtual,nome};
+      }).then(result=>{
+        if(result.committed && result.snapshot.exists()) snapCache[k]={...result.snapshot.val()};
+      }).catch(()=>{}).finally(()=>{
+        _snapReconciliandoGeral.delete(reconKey);
+        render();
+      });
+    }
+  } else {
+    fromSemanas=Math.max(0,totalAtual-entry.base);
+  }
+  const cEntry=cotasCache[k];
+  const extra=(cEntry && cEntry.data===hoje)?(cEntry.extra||0):0;
+  return fromSemanas+extra;
+}
 let dbManual=null, saveTimer=null;
 let numSemanas=5; // número de semanas configurável
 
@@ -588,16 +636,40 @@ window.addEventListener('load',function(){
       const t=teams.find(x=>x.nome==='Chis');
       if(c.meta) t.meta=c.meta;
       if(c.cotasFantasma!=null) t.cotasFantasma=Number(c.cotasFantasma)||0;
-      if(c.vendas_dia!=null) vendasDiaChis=c.vendas_dia;
-      recalcVendasDia();
+      // BUGFIX: não confia mais em config.vendas_dia (nada garantia que estivesse
+      // atualizado) — "vendas hoje" agora vem do cálculo próprio (dbD.dados/snapDia
+      // abaixo), que é recalculado sempre que dados/snapDia/cotasDia mudam.
       render();
     });
+    // snapDia/cotasDia: precisa escutar em tempo real (não só ler uma vez), porque
+    // outra aba (o board individual do Chis) pode gravar um snapshot novo a
+    // qualquer momento, e o cálculo aqui precisa refletir isso.
+    dbD.ref('equipe_danylo/snapDia').on('value',s=>{
+      snapDiaChisCache=s.val()||{};
+      recalcularVendasHojeChis();
+    });
+    dbD.ref('equipe_danylo/cotasDia').on('value',s=>{
+      cotasDiaChisCache=s.val()||{};
+      recalcularVendasHojeChis();
+    });
+    let _ultimoDadosChis={};
+    function recalcularVendasHojeChis(){
+      vendasDiaChis=Object.entries(_ultimoDadosChis).reduce((soma,[k,v])=>{
+        if(!v||v.s==null) return soma;
+        const totalAtual=v.s.reduce((a,b)=>a+b,0);
+        return soma+vendasHojeGeral(dbD, 'equipe_danylo', v.nome||k, totalAtual, snapDiaChisCache, cotasDiaChisCache);
+      },0);
+      recalcVendasDia();
+      render();
+    }
     dbD.ref('equipe_danylo/dados').on('value',s=>{
       const t=teams.find(x=>x.nome==='Chis');
       const dados=s.val()||{};
       const vends={};
       Object.entries(dados).forEach(([k,v])=>{if(v&&v.s!=null)vends[k]=v;});
       t.semanas=somarSemanas(vends);
+      _ultimoDadosChis=vends;
+      recalcularVendasHojeChis();
       document.getElementById('dotChis').className='cs-dot ok';
       render();
     },e=>{document.getElementById('dotChis').className='cs-dot err';});
@@ -636,22 +708,42 @@ window.addEventListener('load',function(){
       const listaEquipes=snapEquipes.val()||{};
       // Para cada equipe registrada, escuta os dados e config em tempo real
       Object.keys(listaEquipes).forEach(eqKey=>{
-        // Config: meta, cotasFantasma e vendas_dia (soma todas as equipes do Luiz)
+        // Config: meta e cotasFantasma (vendas_dia agora vem do cálculo próprio
+        // abaixo — não confia mais em config.vendas_dia, ver bugfix no Chis acima).
         dbL.ref(`${eqKey}/config`).on('value',snapCfg=>{
           const c=snapCfg.val()||{};
           if(c.meta) tL.meta=Number(c.meta);
           if(c.cotasFantasma!=null) tL.cotasFantasma=Number(c.cotasFantasma)||0;
-          if(c.vendas_dia!=null) vendasDiaLuizPorEquipe[eqKey]=Number(c.vendas_dia)||0;
-          recalcVendasDia();
           render();
         });
+        if(!snapDiaLuizCache[eqKey]) snapDiaLuizCache[eqKey]={};
+        if(!cotasDiaLuizCache[eqKey]) cotasDiaLuizCache[eqKey]={};
+        dbL.ref(`${eqKey}/snapDia`).on('value',s=>{
+          snapDiaLuizCache[eqKey]=s.val()||{};
+          recalcularVendasHojeLuiz(eqKey);
+        });
+        dbL.ref(`${eqKey}/cotasDia`).on('value',s=>{
+          cotasDiaLuizCache[eqKey]=s.val()||{};
+          recalcularVendasHojeLuiz(eqKey);
+        });
+        function recalcularVendasHojeLuiz(key){
+          const vends=(tL._eqDados&&tL._eqDados[key])||{};
+          vendasDiaLuizPorEquipe[key]=Object.entries(vends).reduce((soma,[k,v])=>{
+            if(!v||v.s==null) return soma;
+            const nomeVendedor=(v.nome)||k.replace(`${key}_`,'');
+            const totalAtual=v.s.reduce((a,b)=>a+b,0);
+            return soma+vendasHojeGeral(dbL, key, nomeVendedor, totalAtual, snapDiaLuizCache[key], cotasDiaLuizCache[key]);
+          },0);
+          recalcVendasDia();
+          render();
+        }
         // Dados: vendedores com semanas
         dbL.ref(`${eqKey}/dados`).on('value',snapDados=>{
           // Reasume todas as equipes do Luiz zeradas e resoma
           const dadosEquipe=snapDados.val()||{};
           const vends={};
           Object.entries(dadosEquipe).forEach(([k,v])=>{
-            if(v&&v.s!=null) vends[`${eqKey}_${k}`]=v;
+            if(v&&v.s!=null) vends[`${eqKey}_${k}`]={...v, nome:v.nome||k};
           });
           // Guarda por equipe para somar corretamente depois
           if(!tL._eqDados) tL._eqDados={};
@@ -659,6 +751,7 @@ window.addEventListener('load',function(){
           // Soma todas as equipes
           const todosVends=Object.assign({},...Object.values(tL._eqDados));
           tL.semanas=somarSemanas(todosVends);
+          recalcularVendasHojeLuiz(eqKey);
           document.getElementById('dotLuiz').className='cs-dot ok';
           render();
         },()=>{document.getElementById('dotLuiz').className='cs-dot err';});
