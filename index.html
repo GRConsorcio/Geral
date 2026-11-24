@@ -285,31 +285,36 @@ function nomeKeyGeral(n){ return (n||'').toString().replace(/[.#$\[\]/]/g,'_'); 
 function dataHojeGeral(){
   return new Date().toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).split('/').reverse().join('-');
 }
-let snapDiaChisCache={}, cotasDiaChisCache={};
-let snapDiaLuizCache={}, cotasDiaLuizCache={}; // por equipe: {eqKey:{vendorKey:entry}}
+function dataHojeUTCGeral(){
+  return new Date().toISOString().slice(0,10);
+}
+let snapDiaChisCache={}, cotasDiaChisCache={}, snapDiaLoadedChis=false;
+let snapDiaLuizCache={}, cotasDiaLuizCache={}, snapDiaLoadedLuiz={}; // por equipe: {eqKey:{vendorKey:entry}}
 const _snapReconciliandoGeral=new Set();
 
 // Mesma lógica de vendasHojeVendedor() dos boards individuais: compara o total
-// acumulado do mês com o snapshot de meia-noite (snapDia). Cria/corrige o
-// snapshot via transaction se precisar, com guarda de concorrência.
-function vendasHojeGeral(db, prefix, nome, totalAtual, snapCache, cotasCache){
-  const k=nomeKeyGeral(nome), hoje=dataHojeGeral();
+// acumulado do mês com o snapshot de meia-noite (snapDia). Nunca grava snapDia
+// antes do listener inicial hidratar e sempre usa transaction para não
+// sobrescrever a base pré-venda gravada pelo CRM.
+function vendasHojeGeral(db, prefix, nome, totalAtual, snapCache, cotasCache, snapLoaded=true){
+  const k=nomeKeyGeral(nome), hoje=dataHojeGeral(), hojeUTC=dataHojeUTCGeral();
+  const cEntry=cotasCache[k];
+  const extra=(cEntry && cEntry.data===hoje)?(cEntry.extra||0):0;
+  if(!snapLoaded) return extra;
   const entry=snapCache[k];
   let fromSemanas=0;
   const reconKey=prefix+'|'+k;
   const snapRef=db.ref(`${prefix}/snapDia/${k}`);
-  if(!entry){
-    snapCache[k]={data:hoje,base:totalAtual};
-    snapRef.set({data:hoje,base:totalAtual,nome}).catch(()=>{});
-  } else if(entry.data!==hoje){
+  const entryEhHoje = entry && (entry.data===hoje || entry.data===hojeUTC);
+  if(!entryEhHoje){
     snapCache[k]={data:hoje,base:totalAtual}; // otimista, evita travar a renderização
     if(!_snapReconciliandoGeral.has(reconKey)){
       _snapReconciliandoGeral.add(reconKey);
       snapRef.transaction(current=>{
-        if(current && current.data===hoje) return; // já tem snapshot de hoje — não mexe
+        if(current && (current.data===hoje || current.data===hojeUTC)) return; // já tem snapshot de hoje — não mexe
         return {data:hoje,base:totalAtual,nome};
       }).then(result=>{
-        if(result.committed && result.snapshot.exists()) snapCache[k]={...result.snapshot.val()};
+        if(result.snapshot.exists()) snapCache[k]={...result.snapshot.val()};
       }).catch(()=>{}).finally(()=>{
         _snapReconciliandoGeral.delete(reconKey);
         render();
@@ -318,8 +323,6 @@ function vendasHojeGeral(db, prefix, nome, totalAtual, snapCache, cotasCache){
   } else {
     fromSemanas=Math.max(0,totalAtual-entry.base);
   }
-  const cEntry=cotasCache[k];
-  const extra=(cEntry && cEntry.data===hoje)?(cEntry.extra||0):0;
   return fromSemanas+extra;
 }
 let dbManual=null, saveTimer=null;
@@ -645,6 +648,7 @@ window.addEventListener('load',function(){
     // outra aba (o board individual do Chis) pode gravar um snapshot novo a
     // qualquer momento, e o cálculo aqui precisa refletir isso.
     dbD.ref('equipe_danylo/snapDia').on('value',s=>{
+      snapDiaLoadedChis=true;
       snapDiaChisCache=s.val()||{};
       recalcularVendasHojeChis();
     });
@@ -657,7 +661,7 @@ window.addEventListener('load',function(){
       vendasDiaChis=Object.entries(_ultimoDadosChis).reduce((soma,[k,v])=>{
         if(!v||v.s==null) return soma;
         const totalAtual=v.s.reduce((a,b)=>a+b,0);
-        return soma+vendasHojeGeral(dbD, 'equipe_danylo', v.nome||k, totalAtual, snapDiaChisCache, cotasDiaChisCache);
+        return soma+vendasHojeGeral(dbD, 'equipe_danylo', v.nome||k, totalAtual, snapDiaChisCache, cotasDiaChisCache, snapDiaLoadedChis);
       },0);
       recalcVendasDia();
       render();
@@ -718,7 +722,9 @@ window.addEventListener('load',function(){
         });
         if(!snapDiaLuizCache[eqKey]) snapDiaLuizCache[eqKey]={};
         if(!cotasDiaLuizCache[eqKey]) cotasDiaLuizCache[eqKey]={};
+        if(snapDiaLoadedLuiz[eqKey]==null) snapDiaLoadedLuiz[eqKey]=false;
         dbL.ref(`${eqKey}/snapDia`).on('value',s=>{
+          snapDiaLoadedLuiz[eqKey]=true;
           snapDiaLuizCache[eqKey]=s.val()||{};
           recalcularVendasHojeLuiz(eqKey);
         });
@@ -732,7 +738,7 @@ window.addEventListener('load',function(){
             if(!v||v.s==null) return soma;
             const nomeVendedor=(v.nome)||k.replace(`${key}_`,'');
             const totalAtual=v.s.reduce((a,b)=>a+b,0);
-            return soma+vendasHojeGeral(dbL, key, nomeVendedor, totalAtual, snapDiaLuizCache[key], cotasDiaLuizCache[key]);
+            return soma+vendasHojeGeral(dbL, key, nomeVendedor, totalAtual, snapDiaLuizCache[key], cotasDiaLuizCache[key], !!snapDiaLoadedLuiz[key]);
           },0);
           recalcVendasDia();
           render();
